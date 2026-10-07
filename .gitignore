@@ -1,0 +1,22 @@
+﻿# Node
+node_modules/
+frontend/node_modules/
+dist/
+build/
+
+# PHP
+my-api/sessions/
+my-api/logs/
+my-api/uploads/*.jpg
+my-api/uploads/*.png
+my-api/uploads/*.jpeg
+my-api/uploads/*.gif
+my-api/uploads/*.webp
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
