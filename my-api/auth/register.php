@@ -9,79 +9,49 @@ try {
     $password = $data["password"] ?? "";
 
     if ($name === "" || $email === "" || $password === "") {
-        http_response_code(400);
-        echo json_encode([
-            "success" => false,
-            "error" => "All fields are required"
-        ]);
-        exit;
+        jsonError("All fields are required", 400);
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        http_response_code(400);
-        echo json_encode([
-            "success" => false,
-            "error" => "Invalid email format"
-        ]);
-        exit;
+        jsonError("Invalid email format", 400);
     }
 
     if (strlen($password) < 6) {
-        http_response_code(400);
-        echo json_encode([
-            "success" => false,
-            "error" => "Password must be at least 6 characters"
-        ]);
-        exit;
+        jsonError("Password must be at least 6 characters", 400);
     }
 
     if (strlen($name) < 2) {
-        http_response_code(400);
-        echo json_encode([
-            "success" => false,
-            "error" => "Name must be at least 2 characters"
-        ]);
-        exit;
+        jsonError("Name must be at least 2 characters", 400);
     }
 
     $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
 
     if ($stmt->fetch()) {
-        http_response_code(409);
-        echo json_encode([
-            "success" => false,
-            "error" => "Email already exists"
-        ]);
-        exit;
+        jsonError("Email already exists", 409);
     }
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS cnt FROM users");
+    $stmt->execute();
+    $userCount = (int)$stmt->fetch(PDO::FETCH_ASSOC)["cnt"];
+
+    $role = $userCount === 0 ? "admin" : "user";
 
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
     $stmt = $pdo->prepare(
         "INSERT INTO users (name, email, password, role)
-         VALUES (?, ?, ?, 'user')"
+         VALUES (?, ?, ?, ?)"
     );
-
-    $stmt->execute([$name, $email, $hash]);
+    $stmt->execute([$name, $email, $hash, $role]);
 
     echo json_encode([
         "success" => true,
-        "message" => "Registration successful"
+        "message" => "Registration successful",
+        "role" => $role
     ]);
 
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        "success" => false,
-        "error" => "Database error occurred"
-    ]);
-    exit;
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        "success" => false,
-        "error" => "Server error occurred"
-    ]);
-    exit;
+    error_log("register.php error: " . $e->getMessage());
+    jsonError("Database error occurred", 500);
 }

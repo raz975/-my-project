@@ -14,7 +14,16 @@ if (!is_dir($sessionPath)) {
 session_save_path($sessionPath);
 
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: http://my-api:5173");
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedOrigins = [
+    "http://my-api:5173",
+    "http://my-api:5174",
+    "http://localhost:5173",
+    "http://localhost:5174"
+];
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+}
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
