@@ -20,3 +20,10 @@ my-api/uploads/*.webp
 # OS
 .DS_Store
 Thumbs.db
+
+# PHP sessions
+my-api/sessions/
+my-api/logs/
+
+# OpenServer
+my-api/.osp/
