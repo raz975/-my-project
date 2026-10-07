@@ -7,14 +7,31 @@ export default function CreatePost({ lang }) {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const onFileChange = e => {
+    const f = e.target.files[0];
+    if (!f) { setFile(null); setPreview(null); return; }
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
   const submit = async e => {
     e.preventDefault();
-    setLoading(true); setError("");
+    setLoading(true);
+    setError("");
     try {
-      await api.createPost({ title, content });
+      const created = await api.createPost({ title, content });
+      const newId = created.id;
+
+      if (file) {
+        const up = await api.uploadImage(newId, file);
+        if (!up.success) throw new Error(up.error || "Image upload failed");
+      }
+
       navigate("/");
     } catch (e) {
       setError(e.message);
@@ -31,8 +48,12 @@ export default function CreatePost({ lang }) {
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "18px" }}>
         <input style={inputStyle} placeholder={t(lang, "title")} value={title} onChange={e => setTitle(e.target.value)} required />
         <input style={inputStyle} placeholder={t(lang, "content")} value={content} onChange={e => setContent(e.target.value)} required />
+        <input type="file" accept="image/*" onChange={onFileChange} style={{ fontFamily: "Franklin Gothic Medium", fontSize: "13px" }} />
+        {preview && <img src={preview} alt="preview" style={{ maxWidth: "220px", maxHeight: "150px", borderRadius: "9px", objectFit: "cover" }} />}
         {error && <p style={{ color: "red", margin: "0" }}>{error}</p>}
-        <button disabled={loading} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", marginTop: "5px", background: "#2196f3", color: "white", width: "80px", height: "35px" }}>{loading ? t(lang, "creating") : t(lang, "create")}</button>
+        <button disabled={loading} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", marginTop: "5px", background: "#2196f3", color: "white", width: "80px", height: "35px" }}>
+          {loading ? t(lang, "creating") : t(lang, "create")}
+        </button>
       </form>
     </div>
   );

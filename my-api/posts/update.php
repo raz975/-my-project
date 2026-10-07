@@ -2,41 +2,41 @@
 require_once "../config/init.php";
 
 try {
-    $userId = requireAuth();
+    $user = requireAuth($pdo);
     $data = getJsonInput();
 
     $id = (int)($data["id"] ?? 0);
-    $title = trim(htmlspecialchars(strip_tags($data["title"] ?? ""), ENT_QUOTES, 'UTF-8'));
-    $content = trim(htmlspecialchars(strip_tags($data["content"] ?? ""), ENT_QUOTES, 'UTF-8'));
+    $title = trim($data["title"] ?? "");
+    $content = trim($data["content"] ?? "");
 
     if ($id <= 0 || $title === "" || $content === "") {
-        http_response_code(400);
-        echo json_encode(["error" => "Invalid data"]);
-        exit;
+        jsonError("Invalid data", 400);
     }
 
-    $stmt = $pdo->prepare(
-        "SELECT id FROM posts WHERE id = ? AND user_id = ?"
-    );
-    $stmt->execute([$id, $userId]);
+    $stmt = $pdo->prepare("SELECT id, user_id FROM posts WHERE id = ?");
+    $stmt->execute([$id]);
+    $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$stmt->fetch()) {
-        http_response_code(403);
-        echo json_encode(["error" => "You can edit only your own posts"]);
-        exit;
+    if (!$post) {
+        jsonError("Post not found", 404);
     }
 
-    $stmt = $pdo->prepare(
-        "UPDATE posts SET title = ?, content = ? WHERE id = ? AND user_id = ?"
-    );
-    $stmt->execute([$title, $content, $id, $userId]);
+    $isOwner = (int)$post["user_id"] === (int)$user["id"];
+    $isAdmin = $user["role"] === "admin";
+
+    if (!$isOwner && !$isAdmin) {
+        jsonError("You can edit only your own posts", 403);
+    }
+
+    $stmt = $pdo->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
+    $stmt->execute([$title, $content, $id]);
 
     echo json_encode([
         "success" => true,
         "message" => "Post updated"
     ]);
+
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["error" => "Database error occurred"]);
-    exit;
+    error_log("update.php error: " . $e->getMessage());
+    jsonError("Database error occurred", 500);
 }

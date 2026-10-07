@@ -7,11 +7,15 @@ export default function Post({ user, lang }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
+  const [image, setImage] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api.getPost(id)
-      .then(data => setPost(data.post))
+    Promise.all([api.getPost(id), api.getPostImage(id)])
+      .then(([pData, iData]) => {
+        setPost(pData.post);
+        if (iData.image) setImage("http://my-api" + iData.image.url);
+      })
       .catch(e => setError(e.message));
   }, [id]);
 
@@ -36,6 +40,13 @@ export default function Post({ user, lang }) {
       <h1 style={{ margin: "0 0 18px", fontSize: "30px" }}>{post.title}</h1>
       <p style={{ margin: "9px 0" }}><b>{t(lang, "author")}:</b> {post.author}</p>
       <p style={{ margin: "9px 0" }}><b>{t(lang, "created")}:</b> {post.created_at ? new Date(post.created_at).toLocaleDateString() : "Unknown"}</p>
+
+      {image && (
+        <div style={{ margin: "15px 0", textAlign: "center" }}>
+          <img src={image} alt={post.title} style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "10px", objectFit: "cover" }} />
+        </div>
+      )}
+
       <p style={{ margin: "14px 0 20px" }}>{post.content}</p>
       {(owner || isAdmin) && (
         <div style={{ display: "flex", gap: "10px" }}>

@@ -80,7 +80,30 @@ export const api = {
     createLanguage(data) { return request('/admin/create-language.php', { method: 'POST', body: JSON.stringify(data) }); },
     updateLanguage(data) { return request('/admin/update-language.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deleteLanguage(id) { return request('/admin/delete-language.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
-    setActiveLanguage(id) { return request('/admin/set-active-language.php', { method: 'PUT', body: JSON.stringify({ id }) }); }
+    setActiveLanguage(id) { return request('/admin/set-active-language.php', { method: 'PUT', body: JSON.stringify({ id }) }); },
+
+    getPostImage(postId) {
+        return request(`/images/get.php?post_id=${postId}`);
+    },
+    uploadImage(postId, file) {
+        const formData = new FormData();
+        formData.append("post_id", postId);
+        formData.append("image", file);
+        return fetch(API + "/images/upload.php", {
+            method: "POST",
+            credentials: "include",
+            body: formData
+        }).then(async res => {
+            const text = await res.text();
+            try { return JSON.parse(text); } catch { return { success: false, error: "Invalid response" }; }
+        });
+    },
+    deleteImage(postId) {
+        return request("/images/delete.php", {
+            method: "DELETE",
+            body: JSON.stringify({ post_id: postId })
+        });
+    }
 };
 
 window.addEventListener('unauthorized', () => {
