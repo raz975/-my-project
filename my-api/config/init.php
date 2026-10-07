@@ -44,15 +44,79 @@ function getJsonInput()
     return is_array($data) ? $data : [];
 }
 
-function requireAuth()
+function jsonResponse($data, $code = 200)
+{
+    http_response_code($code);
+    echo json_encode($data);
+    exit;
+}
+
+function jsonError($message, $code = 400)
+{
+    http_response_code($code);
+    echo json_encode([
+        "success" => false,
+        "error" => $message
+    ]);
+    exit;
+}
+
+function getCurrentUser($pdo)
 {
     if (!isset($_SESSION["user_id"])) {
-        http_response_code(401);
-        echo json_encode([
-            "success" => false,
-            "error" => "Unauthorized"
-        ]);
-        exit;
+        return null;
     }
-    return (int) $_SESSION["user_id"];
+
+    $stmt = $pdo->prepare(
+        "SELECT id, name, email, role, is_blocked
+         FROM users
+         WHERE id = ?"
+    );
+    $stmt->execute([(int)$_SESSION["user_id"]]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        return null;
+    }
+
+    if ((int)$user["is_blocked"] === 1) {
+        $_SESSION = [];
+        session_destroy();
+        return null;
+    }
+
+    return $user;
+}
+
+function requireAuth($pdo)
+{
+    $user = getCurrentUser($pdo);
+
+    if (!$user) {
+        jsonError("Unauthorized", 401);
+    }
+
+    return $user;
+}
+
+function requireAdmin($pdo)
+{
+    $user = requireAuth($pdo);
+
+    if ($user["role"] !== "admin") {
+        jsonError("Forbidden: admin only", 403);
+    }
+
+    return $user;
+}
+
+function requireNotBlocked($pdo)
+{
+    $user = requireAuth($pdo);
+
+    if ((int)$user["is_blocked"] === 1) {
+        jsonError("Your account is blocked", 403);
+    }
+
+    return $user;
 }
