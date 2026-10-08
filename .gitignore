@@ -1,29 +1,29 @@
-﻿# Node
+﻿# ========== Node ==========
 node_modules/
 frontend/node_modules/
 dist/
 build/
+.vite/
 
-# PHP
+# ========== PHP / Backend ==========
 my-api/sessions/
 my-api/logs/
-my-api/uploads/*.jpg
-my-api/uploads/*.png
-my-api/uploads/*.jpeg
-my-api/uploads/*.gif
-my-api/uploads/*.webp
+my-api/.osp/
+my-api/uploads/*
+!my-api/uploads/.gitkeep
 
-# IDE
+# ========== IDE / OS ==========
 .vscode/
 .idea/
-
-# OS
 .DS_Store
 Thumbs.db
+*.swp
 
-# PHP sessions
-my-api/sessions/
-my-api/logs/
+# ========== ENV ==========
+.env
+.env.local
+.env.*.local
 
-# OpenServer
-my-api/.osp/
+# ========== Backups ==========
+*.backup
+*.bak

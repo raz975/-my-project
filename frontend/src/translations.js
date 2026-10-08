@@ -27,7 +27,8 @@ export const translations = {
     activeLang: "Активный", deleteLangConfirm: "Удалить язык?",
     cannotDeleteActive: "Нельзя удалить активный язык",
     dragToReorder: "Перетащите для изменения порядка", expandAll: "Развернуть",
-    collapseAll: "Свернуть", adminMenu: "Меню админа", userMenu: "Меню пользователя"
+    collapseAll: "Свернуть", adminMenu: "Меню админа", userMenu: "Меню пользователя",
+    search: "Поиск...", searchBtn: "Найти"
   },
   en: {
     posts: "Posts", myPosts: "My Posts", manageMenu: "Menu", createPost: "Create Post",
@@ -57,7 +58,8 @@ export const translations = {
     activeLang: "Active", deleteLangConfirm: "Delete language?",
     cannotDeleteActive: "Cannot delete active language",
     dragToReorder: "Drag to reorder", expandAll: "Expand",
-    collapseAll: "Collapse", adminMenu: "Admin Menu", userMenu: "User Menu"
+    collapseAll: "Collapse", adminMenu: "Admin Menu", userMenu: "User Menu",
+    search: "Search...", searchBtn: "Search"
   },
   hy: {
     posts: "Գրառումներ", myPosts: "Իմ գրառումները", manageMenu: "Մենյու", createPost: "Ստեղծել",
@@ -87,7 +89,8 @@ export const translations = {
     activeLang: "Ակտիվ", deleteLangConfirm: "Ջնջե՞լ լեզուն։",
     cannotDeleteActive: "Չեք կարող ջնջել ակտիվ լեզուն",
     dragToReorder: "Քաշեք՝ հերթականությունը փոխելու", expandAll: "Ընդարձակել",
-    collapseAll: "Ծալել", adminMenu: "Ադմինի մենյու", userMenu: "Օգտվողի մենյու"
+    collapseAll: "Ծալել", adminMenu: "Ադմինի մենյու", userMenu: "Օգտվողի մենյու",
+    search: "Որոնում...", searchBtn: "Գտնել"
   }
 };
 

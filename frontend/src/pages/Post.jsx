@@ -11,13 +11,13 @@ export default function Post({ user, lang }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([api.getPost(id), api.getPostImage(id)])
+    Promise.all([api.getPost(id, lang), api.getPostImage(id)])
       .then(([pData, iData]) => {
         setPost(pData.post);
         if (iData.image) setImage("http://my-api" + iData.image.url);
       })
       .catch(e => setError(e.message));
-  }, [id]);
+  }, [id, lang]);
 
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!post) return <p style={{ fontFamily: "Franklin Gothic Medium" }}>{t(lang, "loading")}</p>;

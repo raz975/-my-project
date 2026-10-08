@@ -112,7 +112,7 @@ export default function MenuManager({ user, lang }) {
             items={items.filter(i => !i.parent_id)}
             setItems={newItems => {
               setItems(newItems);
-              api.reorderMenu(newItems.map((it, i) => ({ id: it.id, sort_order: i }))).catch(() => {});
+              api.reorderMenu(newItems.map((it, i) => ({ id: it.id, sort_order: i }))).catch(() => { });
             }}
             onEdit={edit}
             onDelete={remove}

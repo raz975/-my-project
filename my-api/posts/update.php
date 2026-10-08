@@ -31,6 +31,30 @@ try {
     $stmt = $pdo->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
     $stmt->execute([$title, $content, $id]);
 
+    if (!empty($data["translations"]) && is_array($data["translations"])) {
+        $stmtTrans = $pdo->prepare("
+            INSERT INTO post_translations (post_id, language_id, title, content)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE title = VALUES(title), content = VALUES(content)
+        ");
+
+        $langMap = [];
+        $stmtLang = $pdo->query("SELECT id, code FROM languages");
+        foreach ($stmtLang->fetchAll(PDO::FETCH_ASSOC) as $l) {
+            $langMap[$l["code"]] = (int)$l["id"];
+        }
+
+        foreach ($data["translations"] as $code => $tr) {
+            if (!isset($langMap[$code])) continue;
+
+            $tTitle = trim($tr["title"] ?? "");
+            $tContent = trim($tr["content"] ?? "");
+            if ($tTitle === "" || $tContent === "") continue;
+
+            $stmtTrans->execute([$id, $langMap[$code], $tTitle, $tContent]);
+        }
+    }
+
     echo json_encode([
         "success" => true,
         "message" => "Post updated"

@@ -56,7 +56,7 @@ export default function AdminUsers({ user, lang }) {
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.email}</td>
               <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.role === "admin" ? t(lang, "roleAdmin") : t(lang, "roleUser")}</td>
               <td style={{ padding: "10px", border: "1px solid #ddd", display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                <button onClick={() => toggleBlock(u)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: u.is_blocked === 1 ? "#4caf50" : "#ff9800", color: "white" }}>{u.is_blocked === 1 ? t(lang, "unblock") : t(lang, "block")}</button>
+                <button onClick={() => toggleBlock(u)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: u.is_blocked === 1 ? "#4caf50" : "red", color: "white" }}>{u.is_blocked === 1 ? t(lang, "unblock") : t(lang, "block")}</button>
                 <button onClick={() => changeRole(u)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "#2196f3", color: "white" }}>{t(lang, "changeRole")}</button>
               </td>
             </tr>

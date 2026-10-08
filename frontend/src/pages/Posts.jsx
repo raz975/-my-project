@@ -27,20 +27,33 @@ function PostCard({ post, lang }) {
 
 export default function Posts({ user, onlyMine = false, lang }) {
   const [posts, setPosts] = useState([]);
+  const [search, setSearch] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api.getPosts()
+    api.getPosts(lang, search)
       .then(data => {
         const all = data.posts || [];
         setPosts(onlyMine ? all.filter(p => Number(p.user_id) === Number(user.id)) : all);
       })
       .catch(e => setError(e.message));
-  }, [user, onlyMine]);
+  }, [user, onlyMine, lang, search]);
+
+  const inputStyle = { padding: "8px 12px", borderRadius: "9px", border: "1px solid #ccc", fontFamily: "Franklin Gothic Medium", width: "250px", fontSize: "14px", outline: "none" };
 
   return (
     <>
-      <h1 style={{ fontFamily: "Franklin Gothic Medium", margin: "0 0 25px" }}>{onlyMine ? t(lang, "myPosts") : t(lang, "allPosts")}</h1>
+      <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "25px", flexWrap: "wrap" }}>
+        <h1 style={{ fontFamily: "Franklin Gothic Medium", margin: 0 }}>{onlyMine ? t(lang, "myPosts") : t(lang, "allPosts")}</h1>
+        <input
+          style={inputStyle}
+          type="text"
+          placeholder={t(lang, "search") || "Поиск..."}
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div style={{ display: "flex", gap: "20px", rowGap: "20px", flexWrap: "wrap" }}>
         {posts.map(post => <PostCard key={post.id} post={post} lang={lang} />)}

@@ -13,19 +13,22 @@ async function request(url, options = {}) {
         });
 
         const text = await response.text();
-        let cleanText = text;
-        const jsonStart = text.indexOf('{');
-        const jsonEnd = text.lastIndexOf('}');
-
-        if (jsonStart !== -1 && jsonEnd !== -1) {
-            cleanText = text.substring(jsonStart, jsonEnd + 1);
-        }
-
         let data;
+
         try {
-            data = JSON.parse(cleanText);
+            data = JSON.parse(text);
         } catch (e) {
-            data = { error: 'Invalid server response' };
+            const jsonStart = text.indexOf('{');
+            const jsonEnd = text.lastIndexOf('}');
+            if (jsonStart !== -1 && jsonEnd !== -1) {
+                try {
+                    data = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
+                } catch (e2) {
+                    data = { error: 'Invalid server response' };
+                }
+            } else {
+                data = { error: 'Invalid server response' };
+            }
         }
 
         if (!response.ok) {
@@ -58,13 +61,19 @@ export const api = {
     updateProfile(data) { return request('/auth/update-profile.php', { method: 'PUT', body: JSON.stringify(data) }); },
     changePassword(data) { return request('/auth/change-password.php', { method: 'PUT', body: JSON.stringify(data) }); },
 
-    getPosts() { return request('/posts/getAll.php'); },
-    getPost(id) { return request(`/posts/getOne.php?id=${id}`); },
+    getPosts(lang, search) {
+        const params = new URLSearchParams();
+        if (lang) params.append("lang", lang);
+        if (search && search.trim()) params.append("search", search.trim());
+        const qs = params.toString();
+        return request(`/posts/getAll.php${qs ? `?${qs}` : ''}`);
+    },
+    getPost(id, lang) { return request(`/posts/getOne.php?id=${id}${lang ? `&lang=${lang}` : ''}`); },
     createPost(data) { return request('/posts/create.php', { method: 'POST', body: JSON.stringify(data) }); },
     updatePost(data) { return request('/posts/update.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deletePost(id) { return request('/posts/delete.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
 
-    getMenu() { return request('/posts/getMenu.php'); },
+    getMenu(lang) { return request(`/posts/getMenu.php${lang ? `?lang=${lang}` : ''}`); },
     createMenuItem(data) { return request('/posts/manageMenu.php', { method: 'POST', body: JSON.stringify(data) }); },
     updateMenuItem(data) { return request('/posts/manageMenu.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deleteMenuItem(id) { return request('/posts/manageMenu.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
@@ -82,9 +91,7 @@ export const api = {
     deleteLanguage(id) { return request('/admin/delete-language.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
     setActiveLanguage(id) { return request('/admin/set-active-language.php', { method: 'PUT', body: JSON.stringify({ id }) }); },
 
-    getPostImage(postId) {
-        return request(`/images/get.php?post_id=${postId}`);
-    },
+    getPostImage(postId) { return request(`/images/get.php?post_id=${postId}`); },
     uploadImage(postId, file) {
         const formData = new FormData();
         formData.append("post_id", postId);
@@ -98,12 +105,7 @@ export const api = {
             try { return JSON.parse(text); } catch { return { success: false, error: "Invalid response" }; }
         });
     },
-    deleteImage(postId) {
-        return request("/images/delete.php", {
-            method: "DELETE",
-            body: JSON.stringify({ post_id: postId })
-        });
-    }
+    deleteImage(postId) { return request("/images/delete.php", { method: "DELETE", body: JSON.stringify({ post_id: postId }) }); }
 };
 
 window.addEventListener('unauthorized', () => {

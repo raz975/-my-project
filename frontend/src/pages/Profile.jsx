@@ -37,8 +37,8 @@ export default function Profile({ user, setUser, lang }) {
       <h1 style={{ fontFamily: "Franklin Gothic Medium", textAlign: "center" }}>{t(lang, "myProfile")}</h1>
 
       <div style={cardStyle}>
-        <h2>{t(lang, "profileInfo")}</h2>
         <form onSubmit={saveProfile} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "15px" }}>
+          <h2>{t(lang, "profileInfo")}</h2>
           <input style={inputStyle} value={name} onChange={e => setName(e.target.value)} placeholder={t(lang, "name")} required />
           <input style={inputStyle} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t(lang, "email")} required />
           <button style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white" }}>{t(lang, "save")}</button>
@@ -46,8 +46,8 @@ export default function Profile({ user, setUser, lang }) {
       </div>
 
       <div style={cardStyle}>
-        <h2>{t(lang, "security")}</h2>
         <form onSubmit={savePassword} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "15px" }}>
+          <h2>{t(lang, "security")}</h2>
           <input style={inputStyle} type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)} placeholder={t(lang, "oldPassword")} required />
           <input style={inputStyle} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder={t(lang, "newPassword")} required />
           <button style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white" }}>{t(lang, "changePassword")}</button>
