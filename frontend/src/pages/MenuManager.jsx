@@ -6,7 +6,9 @@ import MenuTree from "../components/MenuTree.jsx";
 export default function MenuManager({ user, lang }) {
   const [menu, setMenu] = useState([]);
   const [items, setItems] = useState([]);
-  const [name, setName] = useState("");
+  const [languages, setLanguages] = useState([]);
+  const [activeTab, setActiveTab] = useState("ru");
+  const [translations, setTranslations] = useState({});
   const [url, setUrl] = useState("");
   const [parentId, setParentId] = useState("");
   const [editingId, setEditingId] = useState(null);
@@ -16,7 +18,7 @@ export default function MenuManager({ user, lang }) {
   const isAdmin = user?.role === "admin";
 
   const load = () => {
-    api.getMenu()
+    api.getMenu(lang)
       .then(data => {
         const tree = data?.menu || [];
         setMenu(tree);
@@ -31,22 +33,42 @@ export default function MenuManager({ user, lang }) {
       .catch(e => setError(e.message));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    api.getPublicLanguages()
+      .then(data => {
+        const langs = data.languages || [];
+        setLanguages(langs);
+        const initial = {};
+        langs.forEach(l => { initial[l.code] = ""; });
+        setTranslations(initial);
+        const active = langs.find(l => l.is_active === 1) || langs[0];
+        if (active) setActiveTab(active.code);
+      })
+      .catch(() => {});
+    load();
+  }, [lang]);
+
+  const reset = () => {
+    setEditingId(null);
+    setUrl("");
+    setParentId("");
+    const empty = {};
+    languages.forEach(l => { empty[l.code] = ""; });
+    setTranslations(empty);
+    setError("");
+  };
 
   const edit = item => {
     if (!isAdmin) return;
     setEditingId(item.id);
-    setName(item.name);
     setUrl(item.url || "");
     setParentId(item.parent_id || "");
-    setError("");
-  };
 
-  const reset = () => {
-    setEditingId(null);
-    setName("");
-    setUrl("");
-    setParentId("");
+    const initial = {};
+    languages.forEach(l => {
+      initial[l.code] = l.code === (lang || "ru") ? (item.name || "") : "";
+    });
+    setTranslations(initial);
     setError("");
   };
 
@@ -68,10 +90,24 @@ export default function MenuManager({ user, lang }) {
     setLoading(true);
     setError("");
 
+    const mainName = translations[activeTab] || "";
+    if (!mainName.trim()) {
+      setError("Введите название для активного языка: " + activeTab);
+      setLoading(false);
+      return;
+    }
+
+    const transMap = {};
+    languages.forEach(l => {
+      const val = (translations[l.code] || "").trim();
+      if (val) transMap[l.id] = val;
+    });
+
     const data = {
-      name,
+      name: mainName.trim(),
       url: url || null,
-      parent_id: parentId ? Number(parentId) : null
+      parent_id: parentId ? Number(parentId) : null,
+      translations: transMap
     };
 
     try {
@@ -89,6 +125,11 @@ export default function MenuManager({ user, lang }) {
     }
   };
 
+  const handleReorder = newTopItems => {
+    const ordered = newTopItems.map((it, i) => ({ id: it.id, sort_order: i }));
+    api.reorderMenu(ordered).catch(err => console.warn("Reorder error:", err.message));
+  };
+
   const inputStyle = {
     width: "220px",
     height: "38px",
@@ -100,6 +141,8 @@ export default function MenuManager({ user, lang }) {
     outline: "none"
   };
 
+  const topItems = items.filter(i => !i.parent_id);
+
   return (
     <div style={{ display: "flex", gap: "35px", alignItems: "flex-start", maxWidth: "950px", margin: "30px auto", fontFamily: "Franklin Gothic Medium" }}>
       <aside style={{ width: "360px", background: "#f5f5f5", borderRadius: "14px", padding: "20px", boxSizing: "border-box", boxShadow: "3px 3px 8px rgba(0,0,0,.08)" }}>
@@ -107,13 +150,12 @@ export default function MenuManager({ user, lang }) {
 
         {error && <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>}
 
+        {isAdmin && <p style={{ fontSize: "13px", color: "#666", marginBottom: "10px" }}>{t(lang, "dragToReorder")}</p>}
+
         {menu.length ? (
           <MenuTree
-            items={items.filter(i => !i.parent_id)}
-            setItems={newItems => {
-              setItems(newItems);
-              api.reorderMenu(newItems.map((it, i) => ({ id: it.id, sort_order: i }))).catch(() => { });
-            }}
+            items={topItems}
+            setItems={handleReorder}
             onEdit={edit}
             onDelete={remove}
             isAdmin={isAdmin}
@@ -125,18 +167,39 @@ export default function MenuManager({ user, lang }) {
       </aside>
 
       {isAdmin && (
-        <div style={{ background: "rgb(206,236,255)", boxShadow: "4px 4px 10px rgba(0,0,0,.12)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "300px", boxSizing: "border-box" }}>
+        <div style={{ background: "rgb(206,236,255)", boxShadow: "4px 4px 10px rgba(0,0,0,.12)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "340px", boxSizing: "border-box" }}>
           <h2 style={{ margin: "0 0 20px" }}>
             {editingId ? t(lang, "editMenu") : t(lang, "createMenu")}
           </h2>
 
-          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "15px" }}>
+          <div style={{ display: "flex", gap: "5px", marginBottom: "15px", flexWrap: "wrap" }}>
+            {languages.map(l => (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => setActiveTab(l.code)}
+                style={{
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 12px",
+                  cursor: "pointer",
+                  fontFamily: "Franklin Gothic Medium",
+                  background: activeTab === l.code ? "#2196f3" : "#e0e0e0",
+                  color: activeTab === l.code ? "white" : "#333",
+                  fontSize: "13px"
+                }}
+              >
+                {l.name}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
             <input
               style={inputStyle}
-              placeholder={t(lang, "itemName")}
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
+              placeholder={`${t(lang, "itemName")} (${activeTab})`}
+              value={translations[activeTab] || ""}
+              onChange={e => setTranslations({ ...translations, [activeTab]: e.target.value })}
             />
 
             <input
@@ -159,21 +222,13 @@ export default function MenuManager({ user, lang }) {
                 ))}
             </select>
 
-            <div style={{ display: "flex", gap: "10px", marginTop: "3px" }}>
-              <button
-                type="submit"
-                disabled={loading}
-                style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white", width: "80px", height: "35px" }}
-              >
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button type="submit" disabled={loading} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white", width: "80px", height: "35px" }}>
                 {loading ? t(lang, "saving") : editingId ? t(lang, "save") : t(lang, "create")}
               </button>
 
               {editingId && (
-                <button
-                  type="button"
-                  onClick={reset}
-                  style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", width: "80px", height: "35px", color: "white", backgroundColor: "red" }}
-                >
+                <button type="button" onClick={reset} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", width: "80px", height: "35px", color: "white", backgroundColor: "red" }}>
                   {t(lang, "cancel")}
                 </button>
               )}
