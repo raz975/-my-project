@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { t } from "../translations.js";
 
-function PostCard({ post, lang }) {
+function PostCard({ post, lang, user }) {
   const [image, setImage] = useState(null);
+  const [likes, setLikes] = useState(post.likes || 0);
+  const [likedByMe, setLikedByMe] = useState(post.liked_by_me === 1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     api.getPostImage(post.id)
@@ -12,15 +15,51 @@ function PostCard({ post, lang }) {
       .catch(() => {});
   }, [post.id]);
 
+  const toggleLike = async () => {
+    if (!user || loading) return;
+    setLoading(true);
+    try {
+      const res = await api.likePost(post.id);
+      setLikes(res.likes);
+      setLikedByMe(res.liked);
+    } catch (e) {
+      console.warn(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "205px", height: "270px", boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column", color: "var(--text-main)", transition: "background 0.3s" }}>
+    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "205px", height: "300px", boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column", color: "var(--text-main)", transition: "background 0.3s" }}>
       {image && (
         <img src={image} alt={post.title} style={{ width: "100%", height: "90px", objectFit: "cover", borderRadius: "8px", marginBottom: "8px" }} />
       )}
-      <h2 style={{ margin: "0 0 8px", fontSize: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--text-main)" }}>{post.title}</h2>
+      <h2 style={{ margin: "0 0 8px", fontSize: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</h2>
       <p style={{ margin: "5px 0", fontSize: "13px", color: "var(--text-secondary)" }}>{t(lang, "author")}: {post.author}</p>
-      <p style={{ margin: "5px 0 12px", fontSize: "13px", overflow: "hidden", flex: 1, color: "var(--text-main)" }}>{post.content?.substring(0, 55)}{post.content?.length > 55 ? "..." : ""}</p>
-      <Link to={`/posts/${post.id}`} style={{ border: "none", borderRadius: "10px", padding: "7px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", textDecoration: "none", display: "inline-block", background: "var(--accent)", color: "white", fontSize: "13px", textAlign: "center", marginTop: "auto" }}>{t(lang, "readMore")}</Link>
+      <p style={{ margin: "5px 0 8px", fontSize: "13px", overflow: "hidden", flex: 1 }}>{post.content?.substring(0, 45)}{post.content?.length > 45 ? "..." : ""}</p>
+
+      {/* ЛАЙКИ + Read More */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "auto" }}>
+        <button
+          onClick={toggleLike}
+          disabled={loading || !user}
+          title={user ? "" : "Войдите, чтобы лайкать"}
+          style={{
+            border: "none",
+            background: "transparent",
+            cursor: user ? "pointer" : "not-allowed",
+            fontSize: "16px",
+            padding: "4px",
+            borderRadius: "8px",
+            transition: "transform 0.15s",
+            color: likedByMe ? "#e91e63" : "var(--text-muted)"
+          }}
+        >
+          {likedByMe ? "❤️" : "🤍"} {likes}
+        </button>
+
+        <Link to={`/posts/${post.id}`} style={{ border: "none", borderRadius: "10px", padding: "7px 12px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", textDecoration: "none", display: "inline-block", background: "var(--accent)", color: "white", fontSize: "12px", textAlign: "center", marginLeft: "auto" }}>{t(lang, "readMore")}</Link>
+      </div>
     </div>
   );
 }
@@ -66,7 +105,7 @@ export default function Posts({ user, onlyMine = false, lang }) {
 
       {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
       <div style={{ display: "flex", gap: "20px", rowGap: "20px", flexWrap: "wrap" }}>
-        {posts.map(post => <PostCard key={post.id} post={post} lang={lang} />)}
+        {posts.map(post => <PostCard key={post.id} post={post} lang={lang} user={user} />)}
       </div>
       {!posts.length && !error && <p style={{ fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>{onlyMine ? t(lang, "noMyPosts") : t(lang, "noPosts")}</p>}
     </>

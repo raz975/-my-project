@@ -8,16 +8,35 @@ export default function Post({ user, lang }) {
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [image, setImage] = useState(null);
+  const [likes, setLikes] = useState(0);
+  const [likedByMe, setLikedByMe] = useState(false);
+  const [loadingLike, setLoadingLike] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     Promise.all([api.getPost(id, lang), api.getPostImage(id)])
       .then(([pData, iData]) => {
         setPost(pData.post);
+        setLikes(pData.post.likes || 0);
+        setLikedByMe(pData.post.liked_by_me === 1);
         if (iData.image) setImage("http://my-api" + iData.image.url);
       })
       .catch(e => setError(e.message));
   }, [id, lang]);
+
+  const toggleLike = async () => {
+    if (!user || loadingLike) return;
+    setLoadingLike(true);
+    try {
+      const res = await api.likePost(post.id);
+      setLikes(res.likes);
+      setLikedByMe(res.liked);
+    } catch (e) {
+      console.warn(e.message);
+    } finally {
+      setLoadingLike(false);
+    }
+  };
 
   if (error) return <p style={{ color: "var(--danger)" }}>{error}</p>;
   if (!post) return <p style={{ fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>{t(lang, "loading")}</p>;
@@ -37,7 +56,7 @@ export default function Post({ user, lang }) {
 
   return (
     <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "430px", minHeight: "240px", margin: "30px auto", boxSizing: "border-box", color: "var(--text-main)", transition: "background 0.3s" }}>
-      <h1 style={{ margin: "0 0 18px", fontSize: "30px", color: "var(--text-main)" }}>{post.title}</h1>
+      <h1 style={{ margin: "0 0 18px", fontSize: "30px" }}>{post.title}</h1>
       <p style={{ margin: "9px 0" }}><b>{t(lang, "author")}:</b> {post.author}</p>
       <p style={{ margin: "9px 0" }}><b>{t(lang, "created")}:</b> {post.created_at ? new Date(post.created_at).toLocaleDateString() : "Unknown"}</p>
 
@@ -47,7 +66,31 @@ export default function Post({ user, lang }) {
         </div>
       )}
 
-      <p style={{ margin: "14px 0 20px" }}>{post.content}</p>
+      <p style={{ margin: "14px 0 16px" }}>{post.content}</p>
+
+      {/* ЛАЙКИ */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+        <button
+          onClick={toggleLike}
+          disabled={loadingLike || !user}
+          title={user ? "" : "Войдите, чтобы лайкать"}
+          style={{
+            border: "2px solid " + (likedByMe ? "#e91e63" : "var(--border-color)"),
+            background: likedByMe ? "#fce4ec" : "transparent",
+            cursor: user ? "pointer" : "not-allowed",
+            fontSize: "16px",
+            padding: "6px 14px",
+            borderRadius: "20px",
+            fontFamily: "Franklin Gothic Medium",
+            color: likedByMe ? "#e91e63" : "var(--text-main)",
+            fontWeight: "bold",
+            transition: "all 0.2s"
+          }}
+        >
+          {likedByMe ? "❤️" : "🤍"} {likes} {likes === 1 ? "лайк" : "лайков"}
+        </button>
+      </div>
+
       {(owner || isAdmin) && (
         <div style={{ display: "flex", gap: "10px" }}>
           <button onClick={remove} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white" }}>{t(lang, "delete")}</button>

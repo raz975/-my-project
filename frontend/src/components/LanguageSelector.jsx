@@ -32,9 +32,6 @@ export default function LanguageSelector({ lang, setLang }) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
-        {t(lang, "language")}:
-      </span>
       <select value={lang} onChange={changeLanguage} style={selectStyle}>
         {languages.map(l => (
           <option key={l.id} value={l.code}>

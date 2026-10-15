@@ -32,21 +32,6 @@ export default function Navbar({ user, onLogout, lang, setLang }) {
     <nav style={{ padding: "12px 18px", borderBottom: "1px solid var(--border-color)", background: "var(--bg-nav)", display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap", fontFamily: "Franklin Gothic Medium", transition: "background 0.3s" }}>
       {user && (
         <>
-          <select
-            value=""
-            onChange={e => {
-              if (e.target.value) navigate(e.target.value);
-              e.target.value = "";
-            }}
-            style={selectStyle}
-          >
-            <option value="" disabled>{t(lang, "posts")}</option>
-            <option value="/">{t(lang, "posts")}</option>
-            <option value="/my-posts">{t(lang, "myPosts")}</option>
-          </select>
-
-          <Link to="/menu" style={linkStyle}>{t(lang, "manageMenu")}</Link>
-          <Link to="/create" style={linkStyle}>{t(lang, "createPost")}</Link>
 
           {isAdmin && (
             <select
@@ -62,10 +47,11 @@ export default function Navbar({ user, onLogout, lang, setLang }) {
               <option value="/admin/languages">{t(lang, "languages")}</option>
             </select>
           )}
-
+          <Link to="/posts" style={linkStyle}>{t(lang, "posts")}</Link>
+          <Link to="/my-posts" style={linkStyle}>{t(lang, "myPosts")}</Link>
+          <Link to="/create" style={linkStyle}>{t(lang, "createPost")}</Link>
+          <Link to="/menu" style={linkStyle}>{t(lang, "manageMenu")}</Link>
           <Link to="/profile" style={linkStyle}>{t(lang, "profile")}</Link>
-          <span style={{ color: "var(--text-main)", fontSize: "14px" }}>{t(lang, "hello")}, {user.name}!</span>
-          <button onClick={onLogout} style={{ border: "none", borderRadius: "10px", padding: "8px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", fontSize: "14px" }}>{t(lang, "logout")}</button>
         </>
       )}
 
@@ -80,6 +66,7 @@ export default function Navbar({ user, onLogout, lang, setLang }) {
         <ThemeToggle />
         <LanguageSelector lang={lang} setLang={setLang} />
       </div>
+      <button onClick={onLogout} style={{ border: "none", borderRadius: "10px", padding: "8px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", fontSize: "14px" }}>{t(lang, "logout")}</button>
     </nav>
   );
 }

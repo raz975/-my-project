@@ -72,6 +72,7 @@ export const api = {
     createPost(data) { return request('/posts/create.php', { method: 'POST', body: JSON.stringify(data) }); },
     updatePost(data) { return request('/posts/update.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deletePost(id) { return request('/posts/delete.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
+    likePost(postId) { return request('/posts/like.php', { method: 'POST', body: JSON.stringify({ post_id: postId }) }); },
 
     getMenu(lang) { return request(`/posts/getMenu.php${lang ? `?lang=${lang}` : ''}`); },
     createMenuItem(data) { return request('/posts/manageMenu.php', { method: 'POST', body: JSON.stringify(data) }); },
