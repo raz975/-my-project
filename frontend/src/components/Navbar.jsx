@@ -1,39 +1,78 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import LanguageSelector from "./LanguageSelector.jsx";
 import ThemeToggle from "./ThemeToggle.jsx";
 import { t } from "../translations.js";
 
 export default function Navbar({ user, onLogout, lang, setLang }) {
   const isAdmin = user?.role === "admin";
+  const navigate = useNavigate();
+
+  const linkStyle = {
+    color: "var(--text-main)",
+    textDecoration: "none",
+    fontWeight: "normal",
+    fontSize: "14px"
+  };
+
+  const selectStyle = {
+    padding: "8px 12px",
+    border: "1px solid var(--border-input)",
+    borderRadius: "9px",
+    fontFamily: "Franklin Gothic Medium",
+    background: "var(--bg-input)",
+    color: "var(--text-main)",
+    fontSize: "13px",
+    cursor: "pointer",
+    outline: "none",
+    transition: "background 0.2s"
+  };
 
   return (
-    <nav style={{ padding: "12px 18px", borderBottom: "1px solid var(--border-color)", background: "var(--bg-nav)", color: "var(--text-main)", display: "flex", gap: "18px", alignItems: "center", flexWrap: "wrap", fontFamily: "Franklin Gothic Medium", transition: "background 0.3s" }}>
+    <nav style={{ padding: "12px 18px", borderBottom: "1px solid var(--border-color)", background: "var(--bg-nav)", display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap", fontFamily: "Franklin Gothic Medium", transition: "background 0.3s" }}>
       {user && (
         <>
-          <Link to="/" style={{ color: "var(--text-main)" }}>{t(lang, "posts")}</Link>
-          <Link to="/my-posts" style={{ color: "var(--text-main)" }}>{t(lang, "myPosts")}</Link>
-          <Link to="/menu" style={{ color: "var(--text-main)" }}>{t(lang, "manageMenu")}</Link>
-          <Link to="/create" style={{ color: "var(--text-main)" }}>{t(lang, "createPost")}</Link>
+          <select
+            value=""
+            onChange={e => {
+              if (e.target.value) navigate(e.target.value);
+              e.target.value = "";
+            }}
+            style={selectStyle}
+          >
+            <option value="" disabled>{t(lang, "posts")}</option>
+            <option value="/">{t(lang, "posts")}</option>
+            <option value="/my-posts">{t(lang, "myPosts")}</option>
+          </select>
+
+          <Link to="/menu" style={linkStyle}>{t(lang, "manageMenu")}</Link>
+          <Link to="/create" style={linkStyle}>{t(lang, "createPost")}</Link>
 
           {isAdmin && (
-            <span style={{ borderLeft: "2px solid var(--accent)", paddingLeft: "15px", display: "flex", gap: "18px" }}>
-              <Link to="/admin/users" style={{ color: "var(--accent)", fontWeight: "bold" }}>{t(lang, "users")}</Link>
-              <Link to="/admin/languages" style={{ color: "var(--accent)", fontWeight: "bold" }}>{t(lang, "languages")}</Link>
-            </span>
+            <select
+              value=""
+              onChange={e => {
+                if (e.target.value) navigate(e.target.value);
+                e.target.value = "";
+              }}
+              style={selectStyle}
+            >
+              <option value="" disabled>{t(lang, "adminPanel")}</option>
+              <option value="/admin/users">{t(lang, "users")}</option>
+              <option value="/admin/languages">{t(lang, "languages")}</option>
+            </select>
           )}
 
-          <span style={{ borderLeft: "2px solid var(--border-color)", paddingLeft: "15px", display: "flex", gap: "18px", alignItems: "center" }}>
-            <Link to="/profile" style={{ color: "var(--text-main)" }}>{t(lang, "profile")}</Link>
-            <span style={{ color: "var(--text-main)" }}>{t(lang, "hello")}, {user.name}!</span>
-            <button onClick={onLogout} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white" }}>{t(lang, "logout")}</button>
-          </span>
+          <Link to="/profile" style={linkStyle}>{t(lang, "profile")}</Link>
+          <span style={{ color: "var(--text-main)", fontSize: "14px" }}>{t(lang, "hello")}, {user.name}!</span>
+          <button onClick={onLogout} style={{ border: "none", borderRadius: "10px", padding: "8px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", fontSize: "14px" }}>{t(lang, "logout")}</button>
         </>
       )}
 
       {!user && (
         <>
-          <Link to="/login" style={{ color: "var(--text-main)" }}>{t(lang, "login")}</Link>
-          <Link to="/register" style={{ color: "var(--text-main)" }}>{t(lang, "registration")}</Link>
+          <Link to="/login" style={linkStyle}>{t(lang, "login")}</Link>
+          <Link to="/register" style={linkStyle}>{t(lang, "registration")}</Link>
         </>
       )}
 

@@ -24,7 +24,7 @@
   --accent-hover: #1976d2;
   --danger: red;
   --success: #4caf50;
-  --warning: #ff9800;
+  --warning: #6B7280;
 
   --shadow: 4px 4px 10px rgba(0, 0, 0, 0.12);
   --shadow-small: 3px 3px 8px rgba(0, 0, 0, 0.08);
@@ -53,7 +53,7 @@
   --accent-hover: #339af0;
   --danger: #e74c3c;
   --success: #2ecc71;
-  --warning: #f39c12;
+  --warning: #6B7280;
 
   --shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
   --shadow-small: 3px 3px 8px rgba(0, 0, 0, 0.4);
@@ -103,4 +103,44 @@ body {
 
 [data-theme="dark"] td {
   color: var(--text-main) !important;
+}
+
+input[type="file"] {
+  border: none !important;
+  background: transparent !important;
+  color: var(--text-main) !important;
+  font-family: "Franklin Gothic Medium", Arial, sans-serif;
+  font-size: 13px;
+  padding: 4px 0;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: "Franklin Gothic Medium", Arial, sans-serif;
+  font-size: 13px;
+  background: var(--accent);
+  color: white;
+  margin-right: 8px;
+  transition: background 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--accent-hover);
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-family: "Franklin Gothic Medium", Arial, sans-serif;
+  font-size: 13px;
+  background: var(--accent);
+  color: white;
+  margin-right: 8px;
 }

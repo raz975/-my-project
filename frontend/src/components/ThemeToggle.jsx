@@ -19,7 +19,7 @@ export default function ThemeToggle() {
         transition: "background 0.2s"
       }}
     >
-      {theme === "light" ? "🌙" : "☀️"}
+      {theme === "light" ? "dark🌙" : "light☀️"}
     </button>
   );
 }

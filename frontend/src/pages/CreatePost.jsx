@@ -123,8 +123,8 @@ export default function CreatePost({ lang }) {
               value={translations[activeTab].title}
               onChange={e => updateField(activeTab, "title", e.target.value)}
             />
-            <textarea
-              style={{ ...inputStyle, height: "80px", resize: "none" }}
+            <input
+              style={inputStyle}
               placeholder={`${t(lang, "content")} (${activeTab})`}
               value={translations[activeTab].content}
               onChange={e => updateField(activeTab, "content", e.target.value)}

@@ -87,14 +87,15 @@ export default function Languages({ lang }) {
 
   return (
     <div style={{ fontFamily: "Franklin Gothic Medium", maxWidth: "950px", margin: "30px auto", color: "var(--text-main)" }}>
-      <h1 style={{ color: "var(--text-main)" }}>{t(lang, "languages")}</h1>
+      <h1 style={{ color: "var(--text-main)", margin: "0 0 20px" }}>{t(lang, "languages")}</h1>
 
       {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
       {msg && <p style={{ color: "var(--success)" }}>{msg}</p>}
 
       <div style={{ display: "flex", gap: "35px", alignItems: "flex-start" }}>
         <div style={{ flex: 1, background: "var(--bg-row-alt)", borderRadius: "14px", padding: "20px", boxSizing: "border-box", color: "var(--text-main)" }}>
-          <h2 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>{t(lang, "languages")}</h2>
+          <h2 style={{ margin: "0 0 8px", color: "var(--text-main)" }}>{t(lang, "languages")}</h2>
+
           {languages.length ? (
             <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
               {languages.map(l => (
@@ -122,7 +123,7 @@ export default function Languages({ lang }) {
         </div>
 
         <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", boxSizing: "border-box", width: "300px", color: "var(--text-main)", transition: "background 0.3s" }}>
-          <h2 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>
+          <h2 style={{ margin: "0 0 15px", color: "var(--text-main)" }}>
             {editingId ? t(lang, "editLanguage") : t(lang, "addLanguage")}
           </h2>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>

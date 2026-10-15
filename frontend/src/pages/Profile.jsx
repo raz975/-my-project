@@ -56,12 +56,17 @@ export default function Profile({ user, setUser, lang }) {
     transition: "background 0.3s"
   };
 
+  const headingStyle = {
+    margin: "0 0 20px",           // ← отступ снизу 20px
+    color: "var(--text-main)"
+  };
+
   return (
     <div>
-      <h1 style={{ fontFamily: "Franklin Gothic Medium", textAlign: "center", color: "var(--text-main)" }}>{t(lang, "myProfile")}</h1>
+      <h1 style={{ fontFamily: "Franklin Gothic Medium", textAlign: "center", color: "var(--text-main)", margin: "0 0 20px" }}>{t(lang, "myProfile")}</h1>
 
       <div style={cardStyle}>
-        <h2 style={{ color: "var(--text-main)" }}>{t(lang, "profileInfo")}</h2>
+        <h2 style={headingStyle}>{t(lang, "profileInfo")}</h2>
         <form onSubmit={saveProfile} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "15px" }}>
           <input style={inputStyle} value={name} onChange={e => setName(e.target.value)} placeholder={t(lang, "name")} required />
           <input style={inputStyle} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t(lang, "email")} required />
@@ -70,7 +75,7 @@ export default function Profile({ user, setUser, lang }) {
       </div>
 
       <div style={cardStyle}>
-        <h2 style={{ color: "var(--text-main)" }}>{t(lang, "security")}</h2>
+        <h2 style={headingStyle}>{t(lang, "security")}</h2>
         <form onSubmit={savePassword} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "15px" }}>
           <input style={inputStyle} type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)} placeholder={t(lang, "oldPassword")} required />
           <input style={inputStyle} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder={t(lang, "newPassword")} required />

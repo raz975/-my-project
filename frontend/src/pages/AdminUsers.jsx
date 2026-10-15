@@ -71,8 +71,8 @@ export default function AdminUsers({ user, lang }) {
                     background: isMe
                       ? "var(--bg-me)"
                       : u.is_blocked === 1
-                      ? "var(--bg-blocked)"
-                      : "var(--bg-row)",
+                        ? "var(--bg-blocked)"
+                        : "var(--bg-row)",
                     fontWeight: isMe ? "bold" : "normal",
                     color: "var(--text-main)"
                   }}
@@ -92,25 +92,26 @@ export default function AdminUsers({ user, lang }) {
                     ) : (
                       <>
                         <button
-                          onClick={() => toggleBlock(u)}
-                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: u.is_blocked === 1 ? "var(--success)" : "var(--warning)", color: "white" }}
-                        >
-                          {u.is_blocked === 1 ? t(lang, "unblock") : t(lang, "block")}
-                        </button>
-
-                        <button
                           onClick={() => changeRole(u)}
                           style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--accent)", color: "white" }}
                         >
                           {u.role === "admin" ? "→ User" : "→ Admin"}
                         </button>
 
-                        <button
+                                <button
                           onClick={() => deleteUser(u)}
                           style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--danger)", color: "white" }}
                         >
                           {t(lang, "delete")}
                         </button>
+
+                        <button
+                          onClick={() => toggleBlock(u)}
+                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: u.is_blocked === 1 ? "var(--success)" : "var(--warning)", color: "white" }}
+                        >
+                          {u.is_blocked === 1 ? t(lang, "unblock") : t(lang, "block")}
+                        </button>
+
                       </>
                     )}
                   </td>

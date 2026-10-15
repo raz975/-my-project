@@ -23,7 +23,8 @@ try {
 
     echo json_encode([
         "success" => true,
-        "message" => "Order saved"
+        "message" => "Order saved",
+        "count" => count($items)
     ]);
 
 } catch (PDOException $e) {

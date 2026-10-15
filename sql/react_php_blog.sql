@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Окт 08 2026 г., 15:13
+-- Время создания: Окт 15 2026 г., 13:49
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.1.9
 
@@ -65,12 +65,13 @@ CREATE TABLE `menu_items` (
 --
 
 INSERT INTO `menu_items` (`id`, `name`, `parent_id`, `url`, `user_id`, `sort_order`, `is_active`) VALUES
-(4, 'aaa', NULL, 'aaa', 1, 0, 1),
-(5, 'bbb', 4, 'bbb', 1, 2, 1),
-(6, 'ccc', 5, 'ccc', 1, 3, 1),
-(7, 'ddd', NULL, 'ddd', 1, 1, 1),
-(8, 'eee', 7, 'eee', 1, 5, 1),
-(9, 'fff', 8, 'fff', 1, 6, 1);
+(4, 'aaa1', NULL, 'aaa1', 1, 0, 1),
+(5, 'bbb1', 4, 'bbb1', 1, 0, 1),
+(6, 'ccc1', 5, 'ccc1', 1, 0, 1),
+(14, 'bbb2', 4, 'bbb2', 1, 1, 1),
+(15, 'ccc4', 14, 'ccc4', 1, 1, 1),
+(16, 'ccc2', 5, 'ccc2', 1, 1, 1),
+(17, 'ccc3', 14, 'ccc3', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -91,23 +92,18 @@ CREATE TABLE `menu_item_translations` (
 
 INSERT INTO `menu_item_translations` (`id`, `menu_item_id`, `language_id`, `name`) VALUES
 (3, 4, 1, 'aaa'),
-(4, 4, 2, 'aaa (EN)'),
+(4, 4, 2, 'aaa1'),
 (5, 4, 3, 'aaa (HY)'),
 (6, 5, 1, 'bbb'),
-(7, 5, 2, 'bbb (EN)'),
+(7, 5, 2, 'bbb1'),
 (8, 5, 3, 'bbb (HY)'),
 (9, 6, 1, 'ccc'),
-(10, 6, 2, 'ccc (EN)'),
+(10, 6, 2, 'ccc1'),
 (11, 6, 3, 'ccc (HY)'),
-(12, 7, 1, 'ddd'),
-(13, 7, 2, 'ddd (EN)'),
-(14, 7, 3, 'ddd (HY)'),
-(15, 8, 1, 'eee'),
-(16, 8, 2, 'eee (EN)'),
-(17, 8, 3, 'eee (HY)'),
-(18, 9, 1, 'fff'),
-(19, 9, 2, 'fff (EN)'),
-(20, 9, 3, 'fff (HY)');
+(26, 14, 2, 'bbb2'),
+(28, 15, 2, 'ccc4'),
+(30, 16, 2, 'ccc2'),
+(31, 17, 2, 'ccc3');
 
 -- --------------------------------------------------------
 
@@ -160,16 +156,16 @@ CREATE TABLE `post_images` (
 --
 
 INSERT INTO `post_images` (`id`, `post_id`, `file_name`, `original_name`, `mime_type`, `file_size`, `created_at`) VALUES
-(4, 11, 'post_11_1791460868_7c5fa32e.jpg', 'images.jpg', 'image/jpeg', 18163, '2026-10-08 12:01:08'),
-(5, 12, 'post_12_1791460934_1e31c2eb.jpg', 'images (1).jpg', 'image/jpeg', 16038, '2026-10-08 12:02:14'),
-(6, 13, 'post_13_1791461055_4d399dc2.jpg', 'images (2).jpg', 'image/jpeg', 21196, '2026-10-08 12:04:15'),
-(7, 14, 'post_14_1791461183_d37d4f82.jpg', 'images (3).jpg', 'image/jpeg', 31121, '2026-10-08 12:06:23'),
-(8, 15, 'post_15_1791461316_c6fe515d.jpg', 'images (4).jpg', 'image/jpeg', 26010, '2026-10-08 12:08:36'),
-(9, 16, 'post_16_1791461341_57238a0d.jpg', 'images (5).jpg', 'image/jpeg', 47139, '2026-10-08 12:09:01'),
-(10, 17, 'post_17_1791461418_a5184171.jpg', 'images (6).jpg', 'image/jpeg', 49524, '2026-10-08 12:10:18'),
-(11, 18, 'post_18_1791461440_ff77ba74.jpg', 'images (7).jpg', 'image/jpeg', 15012, '2026-10-08 12:10:40'),
-(12, 19, 'post_19_1791461550_64c7d79d.jpg', 'images (8).jpg', 'image/jpeg', 10138, '2026-10-08 12:12:30'),
-(13, 20, 'post_20_1791461564_6f0463a9.jpg', 'images (9).jpg', 'image/jpeg', 21051, '2026-10-08 12:12:44');
+(14, 11, 'post_11_1792058753_11033e27.jpg', 'images (1).jpg', 'image/jpeg', 51357, '2026-10-15 10:05:53'),
+(15, 12, 'post_12_1792058769_223dd285.jpg', 'images (2).jpg', 'image/jpeg', 27604, '2026-10-15 10:06:09'),
+(16, 13, 'post_13_1792058785_3a56f561.jpg', 'images (3).jpg', 'image/jpeg', 17772, '2026-10-15 10:06:25'),
+(17, 14, 'post_14_1792058792_867a93a9.jpg', 'images (4).jpg', 'image/jpeg', 37962, '2026-10-15 10:06:32'),
+(18, 15, 'post_15_1792058806_f8f51698.jpg', 'images (5).jpg', 'image/jpeg', 24495, '2026-10-15 10:06:46'),
+(19, 16, 'post_16_1792058813_9b7b2bf7.jpg', 'images (6).jpg', 'image/jpeg', 60103, '2026-10-15 10:06:53'),
+(20, 17, 'post_17_1792058832_b8d8dc6f.jpg', 'images (7).jpg', 'image/jpeg', 16883, '2026-10-15 10:07:12'),
+(21, 18, 'post_18_1792058841_b023b9e3.jpg', 'images (8).jpg', 'image/jpeg', 55523, '2026-10-15 10:07:21'),
+(22, 19, 'post_19_1792058853_5a2e49ca.jpg', 'images.jpg', 'image/jpeg', 54382, '2026-10-15 10:07:33'),
+(23, 20, 'post_20_1792058881_c3bfdba8.jpg', 'images (9).jpg', 'image/jpeg', 32407, '2026-10-15 10:08:01');
 
 -- --------------------------------------------------------
 
@@ -199,7 +195,16 @@ INSERT INTO `post_translations` (`id`, `post_id`, `language_id`, `title`, `conte
 (33, 17, 2, 'user4', 'user4'),
 (34, 18, 1, 'user4', 'user4'),
 (35, 19, 2, 'user5', 'user5'),
-(36, 20, 2, 'user5', 'user5');
+(36, 20, 2, 'user5', 'user5'),
+(37, 11, 1, 'user1', 'user1'),
+(38, 12, 1, 'user1', 'user1'),
+(39, 13, 1, 'user2', 'user2'),
+(40, 14, 1, 'user2', 'user2'),
+(41, 15, 1, 'user3', 'user3'),
+(42, 16, 1, 'user3', 'user3'),
+(43, 17, 1, 'user4', 'user4'),
+(45, 19, 1, 'user5', 'user5'),
+(46, 20, 1, 'user5', 'user5');
 
 -- --------------------------------------------------------
 
@@ -301,13 +306,13 @@ ALTER TABLE `languages`
 -- AUTO_INCREMENT для таблицы `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT для таблицы `menu_item_translations`
 --
 ALTER TABLE `menu_item_translations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT для таблицы `posts`
@@ -319,13 +324,13 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT для таблицы `post_images`
 --
 ALTER TABLE `post_images`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT для таблицы `post_translations`
 --
 ALTER TABLE `post_translations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
