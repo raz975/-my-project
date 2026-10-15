@@ -13,14 +13,14 @@ function PostCard({ post, lang }) {
   }, [post.id]);
 
   return (
-    <div style={{ background: "rgb(206,236,255)", boxShadow: "4px 4px 10px rgba(0,0,0,.12)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "205px", height: "270px", boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "205px", height: "270px", boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column", color: "var(--text-main)", transition: "background 0.3s" }}>
       {image && (
         <img src={image} alt={post.title} style={{ width: "100%", height: "90px", objectFit: "cover", borderRadius: "8px", marginBottom: "8px" }} />
       )}
-      <h2 style={{ margin: "0 0 8px", fontSize: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</h2>
-      <p style={{ margin: "5px 0", fontSize: "13px" }}>{t(lang, "author")}: {post.author}</p>
-      <p style={{ margin: "5px 0 12px", fontSize: "13px", overflow: "hidden", flex: 1 }}>{post.content?.substring(0, 55)}{post.content?.length > 55 ? "..." : ""}</p>
-      <Link to={`/posts/${post.id}`} style={{ border: "none", borderRadius: "10px", padding: "7px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", textDecoration: "none", display: "inline-block", background: "white", color: "black", fontSize: "13px", textAlign: "center", marginTop: "auto" }}>{t(lang, "readMore")}</Link>
+      <h2 style={{ margin: "0 0 8px", fontSize: "20px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--text-main)" }}>{post.title}</h2>
+      <p style={{ margin: "5px 0", fontSize: "13px", color: "var(--text-secondary)" }}>{t(lang, "author")}: {post.author}</p>
+      <p style={{ margin: "5px 0 12px", fontSize: "13px", overflow: "hidden", flex: 1, color: "var(--text-main)" }}>{post.content?.substring(0, 55)}{post.content?.length > 55 ? "..." : ""}</p>
+      <Link to={`/posts/${post.id}`} style={{ border: "none", borderRadius: "10px", padding: "7px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", textDecoration: "none", display: "inline-block", background: "var(--accent)", color: "white", fontSize: "13px", textAlign: "center", marginTop: "auto" }}>{t(lang, "readMore")}</Link>
     </div>
   );
 }
@@ -39,12 +39,22 @@ export default function Posts({ user, onlyMine = false, lang }) {
       .catch(e => setError(e.message));
   }, [user, onlyMine, lang, search]);
 
-  const inputStyle = { padding: "8px 12px", borderRadius: "9px", border: "1px solid #ccc", fontFamily: "Franklin Gothic Medium", width: "250px", fontSize: "14px", outline: "none" };
+  const inputStyle = {
+    padding: "8px 12px",
+    borderRadius: "9px",
+    border: "1px solid var(--border-input)",
+    fontFamily: "Franklin Gothic Medium",
+    width: "250px",
+    fontSize: "14px",
+    outline: "none",
+    background: "var(--bg-input)",
+    color: "var(--text-main)"
+  };
 
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "25px", flexWrap: "wrap" }}>
-        <h1 style={{ fontFamily: "Franklin Gothic Medium", margin: 0 }}>{onlyMine ? t(lang, "myPosts") : t(lang, "allPosts")}</h1>
+        <h1 style={{ fontFamily: "Franklin Gothic Medium", margin: 0, color: "var(--text-main)" }}>{onlyMine ? t(lang, "myPosts") : t(lang, "allPosts")}</h1>
         <input
           style={inputStyle}
           type="text"
@@ -54,11 +64,11 @@ export default function Posts({ user, onlyMine = false, lang }) {
         />
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
       <div style={{ display: "flex", gap: "20px", rowGap: "20px", flexWrap: "wrap" }}>
         {posts.map(post => <PostCard key={post.id} post={post} lang={lang} />)}
       </div>
-      {!posts.length && !error && <p style={{ fontFamily: "Franklin Gothic Medium" }}>{onlyMine ? t(lang, "noMyPosts") : t(lang, "noPosts")}</p>}
+      {!posts.length && !error && <p style={{ fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>{onlyMine ? t(lang, "noMyPosts") : t(lang, "noPosts")}</p>}
     </>
   );
 }

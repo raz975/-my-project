@@ -21,21 +21,21 @@ function SortableRow({ item, onEdit, onDelete, isAdmin, lang, level, onReorder }
   return (
     <li style={{ listStyle: "none", marginBottom: "8px", marginLeft: level > 0 ? "25px" : 0 }}>
       <div ref={setNodeRef} style={style} {...attributes}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "9px 11px", background: "white", borderRadius: "9px", width: "fit-content", maxWidth: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "9px 11px", background: "var(--bg-row)", borderRadius: "9px", width: "fit-content", maxWidth: "100%", color: "var(--text-main)", transition: "background 0.3s" }}>
           {isAdmin && (
-            <span {...listeners} style={{ cursor: "grab", userSelect: "none", fontSize: "18px", color: "#666", touchAction: "none" }} title="Перетащить">
+            <span {...listeners} style={{ cursor: "grab", userSelect: "none", fontSize: "18px", color: "var(--text-muted)", touchAction: "none" }} title="Перетащить">
               ☰
             </span>
           )}
           <span onClick={() => hasChildren && setOpen(!open)} style={{ cursor: hasChildren ? "pointer" : "default" }}>
             {hasChildren ? (open ? "📂" : "📁") : "📄"}
           </span>
-          <span>{item.display_name || item.name}</span>
-          {item.url && <small style={{ color: "#777" }}>{item.url}</small>}
+          <span style={{ color: "var(--text-main)" }}>{item.display_name || item.name}</span>
+          {item.url && <small style={{ color: "var(--text-muted)" }}>{item.url}</small>}
           {isAdmin && (
             <>
-              <button onClick={() => onEdit(item)} style={{ border: "none", borderRadius: "10px", padding: "5px 10px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white" }}>{t(lang, "edit")}</button>
-              <button onClick={() => onDelete(item.id)} style={{ border: "none", borderRadius: "10px", padding: "5px 10px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "red", color: "white" }}>{t(lang, "delete")}</button>
+              <button onClick={() => onEdit(item)} style={{ border: "none", borderRadius: "10px", padding: "5px 10px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--accent)", color: "white" }}>{t(lang, "edit")}</button>
+              <button onClick={() => onDelete(item.id)} style={{ border: "none", borderRadius: "10px", padding: "5px 10px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white" }}>{t(lang, "delete")}</button>
             </>
           )}
         </div>

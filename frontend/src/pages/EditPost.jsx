@@ -81,13 +81,24 @@ export default function EditPost({ lang }) {
     }
   };
 
-  if (loading) return <p style={{ fontFamily: "Franklin Gothic Medium" }}>{t(lang, "loading")}</p>;
+  if (loading) return <p style={{ fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>{t(lang, "loading")}</p>;
 
-  const inputStyle = { width: "260px", height: "38px", padding: "8px 12px", border: "none", borderRadius: "9px", fontFamily: "Franklin Gothic Medium", boxSizing: "border-box", outline: "none" };
+  const inputStyle = {
+    width: "260px",
+    height: "38px",
+    padding: "8px 12px",
+    border: "1px solid var(--border-input)",
+    borderRadius: "9px",
+    fontFamily: "Franklin Gothic Medium",
+    boxSizing: "border-box",
+    outline: "none",
+    background: "var(--bg-input)",
+    color: "var(--text-main)"
+  };
 
   return (
-    <div style={{ background: "rgb(206,236,255)", boxShadow: "4px 4px 10px rgba(0,0,0,.12)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "440px", margin: "30px auto", textAlign: "center", boxSizing: "border-box" }}>
-      <h1 style={{ margin: "0 0 20px" }}>{t(lang, "editPost")}</h1>
+    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "440px", margin: "30px auto", textAlign: "center", boxSizing: "border-box", color: "var(--text-main)", transition: "background 0.3s" }}>
+      <h1 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>{t(lang, "editPost")}</h1>
 
       <div style={{ display: "flex", gap: "5px", marginBottom: "15px", justifyContent: "center", flexWrap: "wrap" }}>
         {languages.map(l => (
@@ -95,7 +106,7 @@ export default function EditPost({ lang }) {
             key={l.code}
             type="button"
             onClick={() => setActiveTab(l.code)}
-            style={{ border: "none", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: activeTab === l.code ? "#2196f3" : "#e0e0e0", color: activeTab === l.code ? "white" : "#333", fontSize: "13px" }}
+            style={{ border: "none", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: activeTab === l.code ? "var(--accent)" : "var(--bg-hover)", color: activeTab === l.code ? "white" : "var(--text-main)", fontSize: "13px" }}
           >
             {l.name}
           </button>
@@ -111,8 +122,8 @@ export default function EditPost({ lang }) {
               value={translations[activeTab].title}
               onChange={e => updateField(activeTab, "title", e.target.value)}
             />
-            <input
-              style={inputStyle}
+            <textarea
+              style={{ ...inputStyle, height: "80px", resize: "none" }}
               placeholder={`${t(lang, "content")} (${activeTab})`}
               value={translations[activeTab].content}
               onChange={e => updateField(activeTab, "content", e.target.value)}
@@ -122,19 +133,19 @@ export default function EditPost({ lang }) {
 
         {existing && !preview && (
           <div>
-            <p style={{ margin: "0 0 5px", fontSize: "13px", color: "#555" }}>Текущая картинка:</p>
+            <p style={{ margin: "0 0 5px", fontSize: "13px", color: "var(--text-secondary)" }}>Текущая картинка:</p>
             <img src={existing} alt="current" style={{ maxWidth: "220px", maxHeight: "150px", borderRadius: "9px", objectFit: "cover" }} />
           </div>
         )}
 
-        <input type="file" accept="image/*" onChange={onFileChange} style={{ fontFamily: "Franklin Gothic Medium", fontSize: "13px" }} />
+        <input type="file" accept="image/*" onChange={onFileChange} style={{ fontFamily: "Franklin Gothic Medium", fontSize: "13px", color: "var(--text-main)" }} />
         {preview && <img src={preview} alt="preview" style={{ maxWidth: "220px", maxHeight: "150px", borderRadius: "9px", objectFit: "cover" }} />}
 
-        {error && <p style={{ color: "red", margin: "0" }}>{error}</p>}
+        {error && <p style={{ color: "var(--danger)", margin: "0" }}>{error}</p>}
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white", height: "35px" }}>{t(lang, "save")}</button>
-          <button type="button" onClick={() => navigate(`/posts/${id}`)} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "red", color: "white", height: "35px" }}>{t(lang, "cancel")}</button>
+          <button style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--accent)", color: "white", height: "35px" }}>{t(lang, "save")}</button>
+          <button type="button" onClick={() => navigate(`/posts/${id}`)} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", height: "35px" }}>{t(lang, "cancel")}</button>
         </div>
       </form>
     </div>

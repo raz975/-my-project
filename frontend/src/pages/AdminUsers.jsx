@@ -43,26 +43,22 @@ export default function AdminUsers({ user, lang }) {
     } catch (e) { alert(e.message); }
   };
 
-  return (
-    <div style={{ fontFamily: "Franklin Gothic Medium", maxWidth: "1000px", margin: "30px auto" }}>
-      <h1>{t(lang, "users")}</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+  const cellStyle = { padding: "10px", border: "1px solid var(--border-color)" };
 
-      {/* ⭐ ОБЁРТКА СО СКРУГЛЕНИЕМ */}
-      <div style={{
-        marginTop: "20px",
-        borderRadius: "14px",
-        overflow: "hidden",          
-        boxShadow: "4px 4px 10px rgba(0,0,0,.12)"
-      }}>
+  return (
+    <div style={{ fontFamily: "Franklin Gothic Medium", maxWidth: "1000px", margin: "30px auto", color: "var(--text-main)" }}>
+      <h1 style={{ color: "var(--text-main)" }}>{t(lang, "users")}</h1>
+      {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
+
+      <div style={{ marginTop: "20px", borderRadius: "14px", overflow: "hidden", boxShadow: "var(--shadow)" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ background: "#f0f0f0" }}>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>ID</th>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>{t(lang, "name")}</th>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>{t(lang, "email")}</th>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>{t(lang, "role")}</th>
-              <th style={{ padding: "10px", border: "1px solid #ddd" }}>{t(lang, "actions")}</th>
+            <tr style={{ background: "var(--bg-row-alt)" }}>
+              <th style={cellStyle}>ID</th>
+              <th style={cellStyle}>{t(lang, "name")}</th>
+              <th style={cellStyle}>{t(lang, "email")}</th>
+              <th style={cellStyle}>{t(lang, "role")}</th>
+              <th style={cellStyle}>{t(lang, "actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -73,44 +69,45 @@ export default function AdminUsers({ user, lang }) {
                   key={u.id}
                   style={{
                     background: isMe
-                      ? "#d4f5d4"
+                      ? "var(--bg-me)"
                       : u.is_blocked === 1
-                      ? "#ffe0e0"
-                      : "white",
-                    fontWeight: isMe ? "bold" : "normal"
+                      ? "var(--bg-blocked)"
+                      : "var(--bg-row)",
+                    fontWeight: isMe ? "bold" : "normal",
+                    color: "var(--text-main)"
                   }}
                 >
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.id}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>
-                    {u.name} {isMe && <small style={{ color: "#2e7d32" }}>({t(lang, "you")})</small>}
+                  <td style={cellStyle}>{u.id}</td>
+                  <td style={cellStyle}>
+                    {u.name} {isMe && <small style={{ color: "var(--success)" }}>({t(lang, "you")})</small>}
                   </td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>{u.email}</td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd" }}>
+                  <td style={cellStyle}>{u.email}</td>
+                  <td style={cellStyle}>
                     {u.role === "admin" ? t(lang, "roleAdmin") : t(lang, "roleUser")}
-                    {u.is_blocked === 1 && <span style={{ color: "red", marginLeft: "8px" }}>● {t(lang, "blocked")}</span>}
+                    {u.is_blocked === 1 && <span style={{ color: "var(--danger)", marginLeft: "8px" }}>● {t(lang, "blocked")}</span>}
                   </td>
-                  <td style={{ padding: "10px", border: "1px solid #ddd", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <td style={{ ...cellStyle, display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {isMe ? (
-                      <span style={{ color: "#666", fontSize: "13px" }}>— {t(lang, "you")} —</span>
+                      <span style={{ color: "var(--text-muted)", fontSize: "13px" }}>— {t(lang, "you")} —</span>
                     ) : (
                       <>
                         <button
                           onClick={() => toggleBlock(u)}
-                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: u.is_blocked === 1 ? "#4caf50" : "#ff9800", color: "white" }}
+                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: u.is_blocked === 1 ? "var(--success)" : "var(--warning)", color: "white" }}
                         >
                           {u.is_blocked === 1 ? t(lang, "unblock") : t(lang, "block")}
                         </button>
 
                         <button
                           onClick={() => changeRole(u)}
-                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "#2196f3", color: "white" }}
+                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--accent)", color: "white" }}
                         >
                           {u.role === "admin" ? "→ User" : "→ Admin"}
                         </button>
 
                         <button
                           onClick={() => deleteUser(u)}
-                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "red", color: "white" }}
+                          style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--danger)", color: "white" }}
                         >
                           {t(lang, "delete")}
                         </button>

@@ -76,41 +76,42 @@ export default function Languages({ lang }) {
     width: "200px",
     height: "38px",
     padding: "8px 12px",
-    border: "none",
+    border: "1px solid var(--border-input)",
     borderRadius: "9px",
     fontFamily: "Franklin Gothic Medium",
     boxSizing: "border-box",
-    outline: "none"
+    outline: "none",
+    background: "var(--bg-input)",
+    color: "var(--text-main)"
   };
 
   return (
-    <div style={{ fontFamily: "Franklin Gothic Medium", maxWidth: "950px", margin: "30px auto" }}>
-      <h1>{t(lang, "languages")}</h1>
+    <div style={{ fontFamily: "Franklin Gothic Medium", maxWidth: "950px", margin: "30px auto", color: "var(--text-main)" }}>
+      <h1 style={{ color: "var(--text-main)" }}>{t(lang, "languages")}</h1>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {msg && <p style={{ color: "green" }}>{msg}</p>}
+      {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
+      {msg && <p style={{ color: "var(--success)" }}>{msg}</p>}
 
       <div style={{ display: "flex", gap: "35px", alignItems: "flex-start" }}>
-        {/* Список языков */}
-        <div style={{ flex: 1, background: "#f5f5f5", borderRadius: "14px", padding: "20px", boxSizing: "border-box" }}>
-          <h2 style={{ margin: "0 0 20px" }}>{t(lang, "languages")}</h2>
+        <div style={{ flex: 1, background: "var(--bg-row-alt)", borderRadius: "14px", padding: "20px", boxSizing: "border-box", color: "var(--text-main)" }}>
+          <h2 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>{t(lang, "languages")}</h2>
           {languages.length ? (
             <ul style={{ padding: 0, margin: 0, listStyle: "none" }}>
               {languages.map(l => (
-                <li key={l.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", marginBottom: "8px", background: "white", borderRadius: "9px", border: l.is_active === 1 ? "2px solid #4caf50" : "1px solid #ddd" }}>
+                <li key={l.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", marginBottom: "8px", background: "var(--bg-row)", borderRadius: "9px", border: l.is_active === 1 ? "2px solid var(--success)" : "1px solid var(--border-color)", color: "var(--text-main)" }}>
                   <b>{l.code}</b>
                   <span>{l.name}</span>
                   {l.is_active === 1 && (
-                    <span style={{ fontSize: "12px", color: "#4caf50", marginLeft: "5px" }}>
+                    <span style={{ fontSize: "12px", color: "var(--success)", marginLeft: "5px" }}>
                       ● {t(lang, "activeLang")}
                     </span>
                   )}
                   <div style={{ marginLeft: "auto", display: "flex", gap: "6px" }}>
                     {l.is_active !== 1 && (
-                      <button onClick={() => setActive(l.id)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "#4caf50", color: "white" }}>{t(lang, "setActive")}</button>
+                      <button onClick={() => setActive(l.id)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--success)", color: "white" }}>{t(lang, "setActive")}</button>
                     )}
-                    <button onClick={() => edit(l)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "#2196f3", color: "white" }}>{t(lang, "edit")}</button>
-                    <button onClick={() => remove(l.id)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "red", color: "white" }}>{t(lang, "delete")}</button>
+                    <button onClick={() => edit(l)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--accent)", color: "white" }}>{t(lang, "edit")}</button>
+                    <button onClick={() => remove(l.id)} style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--danger)", color: "white" }}>{t(lang, "delete")}</button>
                   </div>
                 </li>
               ))}
@@ -120,9 +121,8 @@ export default function Languages({ lang }) {
           )}
         </div>
 
-        {/* Форма создания/редактирования */}
-        <div style={{ background: "rgb(206,236,255)", boxShadow: "4px 4px 10px rgba(0,0,0,.12)", borderRadius: "14px", padding: "20px", boxSizing: "border-box", width: "300px" }}>
-          <h2 style={{ margin: "0 0 20px" }}>
+        <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", boxSizing: "border-box", width: "300px", color: "var(--text-main)", transition: "background 0.3s" }}>
+          <h2 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>
             {editingId ? t(lang, "editLanguage") : t(lang, "addLanguage")}
           </h2>
           <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
@@ -144,11 +144,11 @@ export default function Languages({ lang }) {
               required
             />
             <div style={{ display: "flex", gap: "10px" }}>
-              <button type="submit" style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white", height: "35px" }}>
+              <button type="submit" style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--accent)", color: "white", height: "35px" }}>
                 {editingId ? t(lang, "save") : t(lang, "create")}
               </button>
               {editingId && (
-                <button type="button" onClick={reset} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "red", color: "white", height: "35px" }}>
+                <button type="button" onClick={reset} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", height: "35px" }}>
                   {t(lang, "cancel")}
                 </button>
               )}

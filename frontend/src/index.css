@@ -33,22 +33,21 @@
   --bg-blocked: #ffe0e0;
 }
 
-/* ===== ТЁМНАЯ ТЕМА ===== */
 [data-theme="dark"] {
   --bg-main: #1a1a1a;
-  --bg-card: #2a2a2a;
+  --bg-card: #2a3d4f;         
   --bg-nav: #1f1f1f;
-  --bg-input: #333333;
+  --bg-input: #3a4a5c;        
   --bg-row: #2a2a2a;
   --bg-row-alt: #333333;
   --bg-hover: #444444;
 
-  --text-main: #f0f0f0;
+  --text-main: #f0f0f0;         
   --text-secondary: #cccccc;
   --text-muted: #999999;
 
   --border-color: #444444;
-  --border-input: #555555;
+  --border-input: #556677;
 
   --accent: #4dabf7;
   --accent-hover: #339af0;
@@ -68,4 +67,40 @@ body {
   color: var(--text-main);
   transition: background-color 0.3s ease, color 0.3s ease;
   font-family: "Franklin Gothic Medium", Arial, sans-serif;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #cccccc !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--bg-input) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border-input) !important;
+}
+
+[data-theme="dark"] a {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] a:hover {
+  color: var(--accent);
+}
+
+[data-theme="dark"] option {
+  background: var(--bg-input);
+  color: var(--text-main);
+}
+
+[data-theme="dark"] th {
+  background: #333333 !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] td {
+  color: var(--text-main) !important;
 }

@@ -144,23 +144,23 @@ export default function MenuManager({ user, lang }) {
     width: "220px",
     height: "38px",
     padding: "8px 12px",
-    border: "none",
+    border: "1px solid var(--border-input)",
     borderRadius: "9px",
     fontFamily: "Franklin Gothic Medium",
     boxSizing: "border-box",
-    outline: "none"
+    outline: "none",
+    background: "var(--bg-input)",
+    color: "var(--text-main)"
   };
 
-  const topItems = items.filter(i => !i.parent_id);
-
   return (
-    <div style={{ display: "flex", gap: "35px", alignItems: "flex-start", maxWidth: "950px", margin: "30px auto", fontFamily: "Franklin Gothic Medium" }}>
-      <aside style={{ width: "360px", background: "#f5f5f5", borderRadius: "14px", padding: "20px", boxSizing: "border-box", boxShadow: "3px 3px 8px rgba(0,0,0,.08)" }}>
-        <h2 style={{ margin: "0 0 20px" }}>{t(lang, "menu")}</h2>
+    <div style={{ display: "flex", gap: "35px", alignItems: "flex-start", maxWidth: "950px", margin: "30px auto", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>
+      <aside style={{ width: "360px", background: "var(--bg-row-alt)", borderRadius: "14px", padding: "20px", boxSizing: "border-box", boxShadow: "var(--shadow-small)", color: "var(--text-main)", transition: "background 0.3s" }}>
+        <h2 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>{t(lang, "menu")}</h2>
 
-        {error && <p style={{ color: "red", marginBottom: "15px" }}>{error}</p>}
+        {error && <p style={{ color: "var(--danger)", marginBottom: "15px" }}>{error}</p>}
 
-        {isAdmin && <p style={{ fontSize: "13px", color: "#666", marginBottom: "10px" }}>{t(lang, "dragToReorder")}</p>}
+        {isAdmin && <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "10px" }}>{t(lang, "dragToReorder")}</p>}
 
         {menu.length ? (
           <MenuTree
@@ -172,13 +172,13 @@ export default function MenuManager({ user, lang }) {
             lang={lang}
           />
         ) : (
-          !error && <p>{t(lang, "noMenuItems")}</p>
+          !error && <p style={{ color: "var(--text-main)" }}>{t(lang, "noMenuItems")}</p>
         )}
       </aside>
 
       {isAdmin && (
-        <div style={{ background: "rgb(206,236,255)", boxShadow: "4px 4px 10px rgba(0,0,0,.12)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "340px", boxSizing: "border-box" }}>
-          <h2 style={{ margin: "0 0 20px" }}>
+        <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "340px", boxSizing: "border-box", color: "var(--text-main)", transition: "background 0.3s" }}>
+          <h2 style={{ margin: "0 0 20px", color: "var(--text-main)" }}>
             {editingId ? t(lang, "editMenu") : t(lang, "createMenu")}
           </h2>
 
@@ -194,8 +194,8 @@ export default function MenuManager({ user, lang }) {
                   padding: "6px 12px",
                   cursor: "pointer",
                   fontFamily: "Franklin Gothic Medium",
-                  background: activeTab === l.code ? "#2196f3" : "#e0e0e0",
-                  color: activeTab === l.code ? "white" : "#333",
+                  background: activeTab === l.code ? "var(--accent)" : "var(--bg-hover)",
+                  color: activeTab === l.code ? "white" : "var(--text-main)",
                   fontSize: "13px"
                 }}
               >
@@ -220,7 +220,7 @@ export default function MenuManager({ user, lang }) {
             />
 
             <select
-              style={{ width: "240px", height: "38px", padding: "8px 10px", border: "none", borderRadius: "6px", fontFamily: "Franklin Gothic Medium", boxSizing: "border-box", background: "white", fontSize: "14px", color: "#333", cursor: "pointer", outline: "none" }}
+              style={{ ...inputStyle, width: "240px", cursor: "pointer" }}
               value={parentId}
               onChange={e => setParentId(e.target.value)}
             >
@@ -233,12 +233,12 @@ export default function MenuManager({ user, lang }) {
             </select>
 
             <div style={{ display: "flex", gap: "10px" }}>
-              <button type="submit" disabled={loading} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "#2196f3", color: "white", width: "80px", height: "35px" }}>
+              <button type="submit" disabled={loading} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--accent)", color: "white", width: "80px", height: "35px" }}>
                 {loading ? t(lang, "saving") : editingId ? t(lang, "save") : t(lang, "create")}
               </button>
 
               {editingId && (
-                <button type="button" onClick={reset} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", width: "80px", height: "35px", color: "white", backgroundColor: "red" }}>
+                <button type="button" onClick={reset} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", width: "80px", height: "35px", color: "white", backgroundColor: "var(--danger)" }}>
                   {t(lang, "cancel")}
                 </button>
               )}
