@@ -126,8 +126,18 @@ export default function MenuManager({ user, lang }) {
   };
 
   const handleReorder = newTopItems => {
-    const ordered = newTopItems.map((it, i) => ({ id: it.id, sort_order: i }));
-    api.reorderMenu(ordered).catch(err => console.warn("Reorder error:", err.message));
+    const allOrdered = [];
+    const collect = (list, parentId = null) => {
+      list.forEach((it, i) => {
+        allOrdered.push({ id: it.id, sort_order: i, parent_id: parentId });
+        if (it.children?.length) collect(it.children, it.id);
+      });
+    };
+    collect(newTopItems);
+
+    api.reorderMenu(allOrdered)
+      .then(() => load())
+      .catch(err => console.warn("Reorder error:", err.message));
   };
 
   const inputStyle = {
@@ -154,7 +164,7 @@ export default function MenuManager({ user, lang }) {
 
         {menu.length ? (
           <MenuTree
-            items={topItems}
+            items={menu}
             setItems={handleReorder}
             onEdit={edit}
             onDelete={remove}

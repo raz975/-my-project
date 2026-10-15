@@ -82,6 +82,7 @@ export const api = {
     getUsers() { return request('/admin/users.php'); },
     blockUser(userId, isBlocked) { return request('/admin/block-user.php', { method: 'PUT', body: JSON.stringify({ user_id: userId, is_blocked: isBlocked }) }); },
     changeRole(userId, role) { return request('/admin/change-role.php', { method: 'PUT', body: JSON.stringify({ user_id: userId, role }) }); },
+    deleteUser(userId) { return request('/admin/delete-user.php', { method: 'DELETE', body: JSON.stringify({ user_id: userId }) }); },
 
     getLanguages() { return request('/admin/languages.php'); },
     getPublicLanguages() { return request('/languages/list.php'); },
