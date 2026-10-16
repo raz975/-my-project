@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../api.js";
 import { t } from "../translations.js";
+import CommentsModal from "../components/CommentsModal.jsx";
 
 export default function Post({ user, lang }) {
   const { id } = useParams();
@@ -12,6 +13,7 @@ export default function Post({ user, lang }) {
   const [likedByMe, setLikedByMe] = useState(false);
   const [loadingLike, setLoadingLike] = useState(false);
   const [error, setError] = useState("");
+  const [openComments, setOpenComments] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getPost(id, lang), api.getPostImage(id)])
@@ -31,11 +33,8 @@ export default function Post({ user, lang }) {
       const res = await api.likePost(post.id);
       setLikes(res.likes);
       setLikedByMe(res.liked);
-    } catch (e) {
-      console.warn(e.message);
-    } finally {
-      setLoadingLike(false);
-    }
+    } catch (e) { console.warn(e.message); }
+    finally { setLoadingLike(false); }
   };
 
   if (error) return <p style={{ color: "var(--danger)" }}>{error}</p>;
@@ -49,54 +48,52 @@ export default function Post({ user, lang }) {
     try {
       await api.deletePost(post.id);
       navigate("/");
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   };
 
   return (
-    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "430px", minHeight: "240px", margin: "30px auto", boxSizing: "border-box", color: "var(--text-main)", transition: "background 0.3s" }}>
-      <h1 style={{ margin: "0 0 18px", fontSize: "30px" }}>{post.title}</h1>
-      <p style={{ margin: "9px 0" }}><b>{t(lang, "author")}:</b> {post.author}</p>
-      <p style={{ margin: "9px 0" }}><b>{t(lang, "created")}:</b> {post.created_at ? new Date(post.created_at).toLocaleDateString() : "Unknown"}</p>
+    <>
+      <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "430px", minHeight: "240px", margin: "30px auto", boxSizing: "border-box", color: "var(--text-main)", transition: "background 0.3s" }}>
+        <h1 style={{ margin: "0 0 18px", fontSize: "30px" }}>{post.title}</h1>
+        <p style={{ margin: "9px 0" }}><b>{t(lang, "author")}:</b> {post.author}</p>
+        <p style={{ margin: "9px 0" }}><b>{t(lang, "created")}:</b> {post.created_at ? new Date(post.created_at).toLocaleDateString() : "Unknown"}</p>
 
-      {image && (
-        <div style={{ margin: "15px 0", textAlign: "center" }}>
-          <img src={image} alt={post.title} style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "10px", objectFit: "cover" }} />
+        {image && (
+          <div style={{ margin: "15px 0", textAlign: "center" }}>
+            <img src={image} alt={post.title} style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "10px", objectFit: "cover" }} />
+          </div>
+        )}
+
+        <p style={{ margin: "14px 0 16px" }}>{post.content}</p>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+          <button
+            onClick={toggleLike}
+            disabled={loadingLike || !user}
+            style={{ border: "2px solid " + (likedByMe ? "#e91e63" : "var(--border-color)"), background: likedByMe ? "#fce4ec" : "transparent", cursor: user ? "pointer" : "not-allowed", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: likedByMe ? "#e91e63" : "var(--text-main)", fontWeight: "bold" }}
+          >
+            {likedByMe ? "❤️" : "🤍"} {likes}
+          </button>
+
+          <button
+            onClick={() => setOpenComments(true)}
+            style={{ border: "2px solid var(--border-color)", background: "transparent", cursor: "pointer", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)", fontWeight: "bold" }}
+          >
+            💬 Комментарии
+          </button>
         </div>
-      )}
 
-      <p style={{ margin: "14px 0 16px" }}>{post.content}</p>
-
-      {/* ЛАЙКИ */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-        <button
-          onClick={toggleLike}
-          disabled={loadingLike || !user}
-          title={user ? "" : "Войдите, чтобы лайкать"}
-          style={{
-            border: "2px solid " + (likedByMe ? "#e91e63" : "var(--border-color)"),
-            background: likedByMe ? "#fce4ec" : "transparent",
-            cursor: user ? "pointer" : "not-allowed",
-            fontSize: "16px",
-            padding: "6px 14px",
-            borderRadius: "20px",
-            fontFamily: "Franklin Gothic Medium",
-            color: likedByMe ? "#e91e63" : "var(--text-main)",
-            fontWeight: "bold",
-            transition: "all 0.2s"
-          }}
-        >
-          {likedByMe ? "❤️" : "🤍"} {likes} {likes === 1 ? "лайк" : "лайков"}
-        </button>
+        {(owner || isAdmin) && (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button onClick={remove} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white" }}>{t(lang, "delete")}</button>
+            {owner && <Link to={`/edit/${post.id}`} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", textDecoration: "none", display: "inline-block", background: "var(--accent)", color: "white" }}>{t(lang, "edit")}</Link>}
+          </div>
+        )}
       </div>
 
-      {(owner || isAdmin) && (
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button onClick={remove} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white" }}>{t(lang, "delete")}</button>
-          {owner && <Link to={`/edit/${post.id}`} style={{ border: "none", borderRadius: "10px", padding: "9px 17px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", textDecoration: "none", display: "inline-block", background: "var(--accent)", color: "white" }}>{t(lang, "edit")}</Link>}
-        </div>
+      {openComments && (
+        <CommentsModal post={post} user={user} lang={lang} onClose={() => setOpenComments(false)} />
       )}
-    </div>
+    </>
   );
 }

@@ -107,7 +107,13 @@ export const api = {
             try { return JSON.parse(text); } catch { return { success: false, error: "Invalid response" }; }
         });
     },
-    deleteImage(postId) { return request("/images/delete.php", { method: "DELETE", body: JSON.stringify({ post_id: postId }) }); }
+    deleteImage(postId) { return request("/images/delete.php", { method: "DELETE", body: JSON.stringify({ post_id: postId }) }); },
+
+    getComments(postId) { return request(`/comments/list.php?post_id=${postId}`); },
+    createComment(postId, content) { return request('/comments/create.php', { method: 'POST', body: JSON.stringify({ post_id: postId, content }) }); },
+    updateComment(id, content) { return request('/comments/update.php', { method: 'PUT', body: JSON.stringify({ id, content }) }); },
+    deleteComment(id) { return request('/comments/delete.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
+    likeComment(commentId) { return request('/comments/like.php', { method: 'POST', body: JSON.stringify({ comment_id: commentId }) }); }
 };
 
 window.addEventListener('unauthorized', () => {
