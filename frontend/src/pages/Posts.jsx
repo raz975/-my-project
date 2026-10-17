@@ -28,7 +28,7 @@ function PostCard({ post, lang, user, onOpenComments }) {
   };
 
   return (
-    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "205px", height: "310px", boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column", color: "var(--text-main)", transition: "background 0.3s" }}>
+    <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "205px", height: "260px", boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column", color: "var(--text-main)", transition: "background 0.3s" }}>
       {image && (
         <img src={image} alt={post.title} style={{ width: "100%", height: "90px", objectFit: "cover", borderRadius: "8px", marginBottom: "8px" }} />
       )}

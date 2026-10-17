@@ -45,7 +45,6 @@ export default function UserProfile({ user, lang }) {
 
   return (
     <div style={{ maxWidth: "900px", margin: "30px auto", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>
-      {/* ШАПКА */}
       <div style={{ background: "var(--bg-card)", borderRadius: "16px", padding: "30px", boxShadow: "var(--shadow)", display: "flex", gap: "30px", alignItems: "center", flexWrap: "wrap" }}>
         <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", color: "white", fontWeight: "bold", flexShrink: 0 }}>
           {profile.name.charAt(0).toUpperCase()}
@@ -85,10 +84,23 @@ export default function UserProfile({ user, lang }) {
       </div>
 
       <h2 style={{ margin: "30px 0 20px" }}>{t(lang, "posts")}</h2>
+
       {profile.posts.length ? (
         <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
           {profile.posts.map(post => (
-            <Link key={post.id} to={`/posts/${post.id}`} style={{ background: "var(--bg-card)", borderRadius: "14px", padding: "20px", boxShadow: "var(--shadow-small)", width: "220px", minHeight: "140px", boxSizing: "border-box", textDecoration: "none", color: "var(--text-main)", display: "flex", flexDirection: "column" }}>
+            <Link key={post.id} to={`/posts/${post.id}`} style={{ background: "var(--bg-card)", borderRadius: "14px", padding: "12px", boxShadow: "var(--shadow-small)", width: "220px", boxSizing: "border-box", textDecoration: "none", color: "var(--text-main)", display: "flex", flexDirection: "column" }}>
+              {post.image_url ? (
+                <img
+                  src={"http://my-api" + post.image_url}
+                  alt={post.title}
+                  style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "10px", marginBottom: "10px" }}
+                  onError={e => { e.target.style.display = "none"; }}
+                />
+              ) : (
+                <div style={{ width: "100%", height: "120px", background: "var(--bg-hover)", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "12px" }}>
+                  нет картинки
+                </div>
+              )}
               <h3 style={{ margin: "0 0 8px", fontSize: "18px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</h3>
               <p style={{ margin: "0", fontSize: "13px", color: "var(--text-secondary)", overflow: "hidden", flex: 1 }}>{post.content?.substring(0, 60)}{post.content?.length > 60 ? "..." : ""}</p>
             </Link>

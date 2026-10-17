@@ -45,8 +45,6 @@ export default function Navbar({ user, onLogout, lang, setLang }) {
           )}
 
           <Link to="/profile" style={linkStyle}>{t(lang, "profile")}</Link>
-          <span style={{ color: "var(--text-main)", fontSize: "14px" }}>{t(lang, "hello")}, {user.name}!</span>
-          <button onClick={onLogout} style={{ border: "none", borderRadius: "10px", padding: "8px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", fontSize: "14px" }}>{t(lang, "logout")}</button>
         </>
       )}
 
@@ -61,6 +59,7 @@ export default function Navbar({ user, onLogout, lang, setLang }) {
         <ThemeToggle />
         <LanguageSelector lang={lang} setLang={setLang} />
       </div>
+          <button onClick={onLogout} style={{ border: "none", borderRadius: "10px", padding: "8px 14px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", background: "var(--danger)", color: "white", fontSize: "14px" }}>{t(lang, "logout")}</button>
     </nav>
   );
 }

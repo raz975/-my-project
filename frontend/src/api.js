@@ -61,6 +61,7 @@ export const api = {
     updateProfile(data) { return request('/auth/update-profile.php', { method: 'PUT', body: JSON.stringify(data) }); },
     changePassword(data) { return request('/auth/change-password.php', { method: 'PUT', body: JSON.stringify(data) }); },
     getMyProfile() { return request('/auth/getMyProfile.php'); },
+
     getPosts(lang, search) {
         const params = new URLSearchParams();
         if (lang) params.append("lang", lang);
@@ -73,15 +74,18 @@ export const api = {
     updatePost(data) { return request('/posts/update.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deletePost(id) { return request('/posts/delete.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
     likePost(postId) { return request('/posts/like.php', { method: 'POST', body: JSON.stringify({ post_id: postId }) }); },
+
     getMenu(lang) { return request(`/posts/getMenu.php${lang ? `?lang=${lang}` : ''}`); },
     createMenuItem(data) { return request('/posts/manageMenu.php', { method: 'POST', body: JSON.stringify(data) }); },
     updateMenuItem(data) { return request('/posts/manageMenu.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deleteMenuItem(id) { return request('/posts/manageMenu.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
     reorderMenu(items) { return request('/posts/reorderMenu.php', { method: 'PUT', body: JSON.stringify({ items }) }); },
+
     getUsers() { return request('/admin/users.php'); },
     blockUser(userId, isBlocked) { return request('/admin/block-user.php', { method: 'PUT', body: JSON.stringify({ user_id: userId, is_blocked: isBlocked }) }); },
     changeRole(userId, role) { return request('/admin/change-role.php', { method: 'PUT', body: JSON.stringify({ user_id: userId, role }) }); },
     deleteUser(userId) { return request('/admin/delete-user.php', { method: 'DELETE', body: JSON.stringify({ user_id: userId }) }); },
+
     getLanguages() { return request('/admin/languages.php'); },
     getPublicLanguages() { return request('/languages/list.php'); },
     getActiveLanguage() { return request('/languages/active.php'); },
@@ -89,7 +93,11 @@ export const api = {
     updateLanguage(data) { return request('/admin/update-language.php', { method: 'PUT', body: JSON.stringify(data) }); },
     deleteLanguage(id) { return request('/admin/delete-language.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
     setActiveLanguage(id) { return request('/admin/set-active-language.php', { method: 'PUT', body: JSON.stringify({ id }) }); },
-    getPostImage(postId) { return request(`/images/get.php?post_id=${postId}`); },
+
+    getPostImage(postId) {
+        return request(`/images/get.php?post_id=${postId}`);
+    },
+
     uploadImage(postId, file) {
         const formData = new FormData();
         formData.append("post_id", postId);
@@ -98,18 +106,27 @@ export const api = {
             method: "POST",
             credentials: "include",
             body: formData
-        }).then(async res => {
-            const text = await res.text();
-            try { return JSON.parse(text); } catch { return { success: false, error: "Invalid response" }; }
+        }).then(function(res) {
+            return res.text().then(function(text) {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    return { success: false, error: "Invalid response" };
+                }
+            });
         });
     },
-    deleteImage(postId) { return request("/images/delete.php", { method: "DELETE", body: JSON.stringify({ post_id: postId }) }); },
+
+    deleteImage(postId) {
+        return request("/images/delete.php", { method: "DELETE", body: JSON.stringify({ post_id: postId }) });
+    },
 
     getComments(postId) { return request(`/comments/list.php?post_id=${postId}`); },
     createComment(postId, content) { return request('/comments/create.php', { method: 'POST', body: JSON.stringify({ post_id: postId, content }) }); },
     updateComment(id, content) { return request('/comments/update.php', { method: 'PUT', body: JSON.stringify({ id, content }) }); },
     deleteComment(id) { return request('/comments/delete.php', { method: 'DELETE', body: JSON.stringify({ id }) }); },
     likeComment(commentId) { return request('/comments/like.php', { method: 'POST', body: JSON.stringify({ comment_id: commentId }) }); },
+
     getUserProfile(id) { return request(`/users/getProfile.php?id=${id}`); },
     subscribe(userId) { return request('/subscriptions/subscribe.php', { method: 'POST', body: JSON.stringify({ user_id: userId }) }); },
     unsubscribe(userId) { return request('/subscriptions/unsubscribe.php', { method: 'POST', body: JSON.stringify({ user_id: userId }) }); }
