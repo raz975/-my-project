@@ -21,19 +21,15 @@ export default function CommentItem({ comment, user, postOwnerId, onUpdate, onDe
       await api.updateComment(comment.id, editText.trim());
       setEditing(false);
       onUpdate();
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   };
 
   const remove = async () => {
-    if (!confirm("Удалить комментарий?")) return;
+    if (!confirm(t(lang, "deleteCommentConfirm"))) return;
     try {
       await api.deleteComment(comment.id);
       onDelete();
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   };
 
   const toggleLike = async () => {
@@ -43,11 +39,8 @@ export default function CommentItem({ comment, user, postOwnerId, onUpdate, onDe
       const res = await api.likeComment(comment.id);
       setLikes(res.likes);
       setLikedByMe(res.liked);
-    } catch (e) {
-      console.warn(e.message);
-    } finally {
-      setLikeLoading(false);
-    }
+    } catch (e) { console.warn(e.message); }
+    finally { setLikeLoading(false); }
   };
 
   const btnStyle = {
@@ -67,7 +60,7 @@ export default function CommentItem({ comment, user, postOwnerId, onUpdate, onDe
         <b style={{ fontSize: "14px" }}>{comment.author}</b>
         <small style={{ color: "var(--text-muted)", fontSize: "12px" }}>
           {new Date(comment.created_at).toLocaleString()}
-          {comment.updated_at && " (изменён)"}
+          {comment.updated_at && " " + t(lang, "edited")}
         </small>
       </div>
 
@@ -76,20 +69,11 @@ export default function CommentItem({ comment, user, postOwnerId, onUpdate, onDe
           <textarea
             value={editText}
             onChange={e => setEditText(e.target.value)}
-            style={{
-              padding: "8px",
-              borderRadius: "8px",
-              border: "1px solid var(--border-input)",
-              background: "var(--bg-input)",
-              color: "var(--text-main)",
-              fontFamily: "Franklin Gothic Medium",
-              resize: "none",
-              minHeight: "60px"
-            }}
+            style={{ padding: "8px", borderRadius: "8px", border: "1px solid var(--border-input)", background: "var(--bg-input)", color: "var(--text-main)", fontFamily: "Franklin Gothic Medium", resize: "none", minHeight: "60px" }}
           />
           <div style={{ display: "flex", gap: "8px" }}>
-            <button onClick={saveEdit} style={{ border: "none", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", background: "var(--accent)", color: "white", fontSize: "12px" }}>Сохранить</button>
-            <button onClick={() => { setEditing(false); setEditText(comment.content); }} style={{ border: "none", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", background: "var(--danger)", color: "white", fontSize: "12px" }}>Отмена</button>
+            <button onClick={saveEdit} style={{ border: "none", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", background: "var(--accent)", color: "white", fontSize: "12px" }}>{t(lang, "save")}</button>
+            <button onClick={() => { setEditing(false); setEditText(comment.content); }} style={{ border: "none", borderRadius: "8px", padding: "5px 12px", cursor: "pointer", background: "var(--danger)", color: "white", fontSize: "12px" }}>{t(lang, "cancel")}</button>
           </div>
         </div>
       ) : (
@@ -101,21 +85,13 @@ export default function CommentItem({ comment, user, postOwnerId, onUpdate, onDe
           <button
             onClick={toggleLike}
             disabled={!user || likeLoading}
-            style={{
-              border: "none",
-              background: "transparent",
-              cursor: user ? "pointer" : "not-allowed",
-              fontSize: "13px",
-              color: likedByMe ? "#e91e63" : "var(--text-muted)",
-              padding: "3px 6px",
-              fontFamily: "Franklin Gothic Medium"
-            }}
+            style={{ border: "none", background: "transparent", cursor: user ? "pointer" : "not-allowed", fontSize: "13px", color: likedByMe ? "#e91e63" : "var(--text-muted)", padding: "3px 6px", fontFamily: "Franklin Gothic Medium" }}
           >
             {likedByMe ? "❤️" : "🤍"} {likes}
           </button>
 
-          {canEdit && <button onClick={() => setEditing(true)} style={btnStyle}>Изменить</button>}
-          {canDelete && <button onClick={remove} style={{ ...btnStyle, color: "var(--danger)" }}>Удалить</button>}
+          {canEdit && <button onClick={() => setEditing(true)} style={btnStyle}>{t(lang, "edit")}</button>}
+          {canDelete && <button onClick={remove} style={{ ...btnStyle, color: "var(--danger)" }}>{t(lang, "delete")}</button>}
         </div>
       )}
     </div>

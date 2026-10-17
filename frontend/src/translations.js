@@ -1,5 +1,6 @@
 export const translations = {
   ru: {
+    // Общее
     posts: "Посты", myPosts: "Мои посты", manageMenu: "Меню", createPost: "Создать пост",
     login: "Войти", registration: "Регистрация", hello: "Привет", logout: "Выйти",
     allPosts: "Все посты", noPosts: "Постов пока нет.", noMyPosts: "У вас пока нет постов.",
@@ -28,7 +29,15 @@ export const translations = {
     cannotDeleteActive: "Нельзя удалить активный язык",
     dragToReorder: "Перетащите для изменения порядка", expandAll: "Развернуть",
     collapseAll: "Свернуть", adminMenu: "Меню админа", userMenu: "Меню пользователя",
-    search: "Поиск...", searchBtn: "Найти"
+    search: "Поиск...", searchBtn: "Найти",
+    comments: "Комментарии", noComments: "Пока нет комментариев. Будь первым! 🎉",
+    writeComment: "Написать комментарий...", loginToComment: "Войдите, чтобы комментировать",
+    deleteCommentConfirm: "Удалить комментарий?", edited: "(изменён)",
+    likes: "лайков", like: "лайк",
+    titleRequired: "Введите название для активного языка",
+    cannotDeleteSelf: "Нельзя удалить себя",
+    confirmDeleteUser: "Удалить пользователя",
+    closeEsc: "Закрыть (Esc)"
   },
   en: {
     posts: "Posts", myPosts: "My Posts", manageMenu: "Menu", createPost: "Create Post",
@@ -59,7 +68,15 @@ export const translations = {
     cannotDeleteActive: "Cannot delete active language",
     dragToReorder: "Drag to reorder", expandAll: "Expand",
     collapseAll: "Collapse", adminMenu: "Admin Menu", userMenu: "User Menu",
-    search: "Search...", searchBtn: "Search"
+    search: "Search...", searchBtn: "Search",
+    comments: "Comments", noComments: "No comments yet. Be the first! 🎉",
+    writeComment: "Write a comment...", loginToComment: "Login to comment",
+    deleteCommentConfirm: "Delete comment?", edited: "(edited)",
+    likes: "likes", like: "like",
+    titleRequired: "Enter name for active language",
+    cannotDeleteSelf: "Cannot delete yourself",
+    confirmDeleteUser: "Delete user",
+    closeEsc: "Close (Esc)"
   },
   hy: {
     posts: "Գրառումներ", myPosts: "Իմ գրառումները", manageMenu: "Մենյու", createPost: "Ստեղծել",
@@ -90,7 +107,15 @@ export const translations = {
     cannotDeleteActive: "Չեք կարող ջնջել ակտիվ լեզուն",
     dragToReorder: "Քաշեք՝ հերթականությունը փոխելու", expandAll: "Ընդարձակել",
     collapseAll: "Ծալել", adminMenu: "Ադմինի մենյու", userMenu: "Օգտվողի մենյու",
-    search: "Որոնում...", searchBtn: "Գտնել"
+    search: "Որոնում...", searchBtn: "Գտնել",
+    comments: "Մեկնաբանություններ", noComments: "Մեկնաբանություններ դեռ չկան։ Եղեք առաջինը։ 🎉",
+    writeComment: "Գրել մեկնաբանություն...", loginToComment: "Մուտք գործեք մեկնաբանելու համար",
+    deleteCommentConfirm: "Ջնջե՞լ մեկնաբանությունը։", edited: "(փոփոխված)",
+    likes: "հավանում", like: "հավանում",
+    titleRequired: "Մուտքագրեք անունը ակտիվ լեզվի համար",
+    cannotDeleteSelf: "Չեք կարող ջնջել ինքներդ ձեզ",
+    confirmDeleteUser: "Ջնջել օգտատիրոջը",
+    closeEsc: "Փակել (Esc)"
   }
 };
 

@@ -35,8 +35,8 @@ export default function AdminUsers({ user, lang }) {
   };
 
   const deleteUser = async u => {
-    if (u.id === user.id) { alert("Нельзя удалить себя"); return; }
-    if (!confirm(`Удалить пользователя ${u.name} (${u.email})?`)) return;
+    if (u.id === user.id) { alert(t(lang, "cannotDeleteSelf")); return; }
+    if (!confirm(`${t(lang, "confirmDeleteUser")} ${u.name} (${u.email})?`)) return;
     try {
       await api.deleteUser(u.id);
       load();
@@ -98,7 +98,7 @@ export default function AdminUsers({ user, lang }) {
                           {u.role === "admin" ? "→ User" : "→ Admin"}
                         </button>
 
-                                <button
+                        <button
                           onClick={() => deleteUser(u)}
                           style={{ border: "none", borderRadius: "8px", padding: "5px 10px", cursor: "pointer", background: "var(--danger)", color: "white" }}
                         >

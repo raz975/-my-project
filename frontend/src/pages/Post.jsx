@@ -72,14 +72,14 @@ export default function Post({ user, lang }) {
             disabled={loadingLike || !user}
             style={{ border: "2px solid " + (likedByMe ? "#e91e63" : "var(--border-color)"), background: likedByMe ? "#fce4ec" : "transparent", cursor: user ? "pointer" : "not-allowed", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: likedByMe ? "#e91e63" : "var(--text-main)", fontWeight: "bold" }}
           >
-            {likedByMe ? "❤️" : "🤍"} {likes}
+            {likedByMe ? "❤️" : "🤍"} {likes} {likes === 1 ? t(lang, "like") : t(lang, "likes")}
           </button>
 
           <button
             onClick={() => setOpenComments(true)}
             style={{ border: "2px solid var(--border-color)", background: "transparent", cursor: "pointer", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)", fontWeight: "bold" }}
           >
-            💬 Комментарии
+            💬 {t(lang, "comments")}
           </button>
         </div>
 

@@ -92,7 +92,7 @@ export default function MenuManager({ user, lang }) {
 
     const mainName = translations[activeTab] || "";
     if (!mainName.trim()) {
-      setError("Введите название для активного языка: " + activeTab);
+      setError(`${t(lang, "titleRequired")}: ${activeTab}`);
       setLoading(false);
       return;
     }
