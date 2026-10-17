@@ -2,6 +2,54 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api.js";
 import { t } from "../translations.js";
+import CommentsModal from "../components/CommentsModal.jsx";
+
+function PostMiniCard({ post, lang, user, onOpenComments }) {
+  const [likes, setLikes] = useState(post.likes || 0);
+  const [likedByMe, setLikedByMe] = useState(post.liked_by_me === 1);
+  const [loading, setLoading] = useState(false);
+
+  const toggleLike = async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user || loading) return;
+    setLoading(true);
+    try {
+      const res = await api.likePost(post.id);
+      setLikes(res.likes);
+      setLikedByMe(res.liked);
+    } catch (err) { console.warn(err.message); }
+    finally { setLoading(false); }
+  };
+
+  const openComments = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    onOpenComments(post);
+  };
+
+  return (
+    <Link
+      to={`/posts/${post.id}`}
+      style={{ background: "var(--bg-card)", borderRadius: "14px", padding: "12px", boxShadow: "var(--shadow-small)", width: "220px", boxSizing: "border-box", textDecoration: "none", color: "var(--text-main)", display: "flex", flexDirection: "column" }}
+    >
+      {post.image_url ? (
+        <img src={"http://my-api" + post.image_url} alt={post.title} style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "10px", marginBottom: "10px" }} onError={e => { e.target.style.display = "none"; }} />
+      ) : (
+        <div style={{ width: "100%", height: "120px", background: "var(--bg-hover)", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "12px" }}>нет картинки</div>
+      )}
+      <h3 style={{ margin: "0 0 8px", fontSize: "18px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</h3>
+      <p style={{ margin: "0 0 10px", fontSize: "13px", color: "var(--text-secondary)", overflow: "hidden", flex: 1 }}>{post.content?.substring(0, 60)}{post.content?.length > 60 ? "..." : ""}</p>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "auto" }}>
+        <button onClick={toggleLike} disabled={loading || !user} style={{ border: "none", background: "transparent", cursor: user ? "pointer" : "not-allowed", fontSize: "15px", padding: "4px", color: likedByMe ? "#e91e63" : "var(--text-muted)" }}>
+          {likedByMe ? "❤️" : "🤍"} {likes}
+        </button>
+        <button onClick={openComments} style={{ border: "none", background: "transparent", cursor: "pointer", fontSize: "15px", padding: "4px", color: "var(--text-muted)" }}>💬</button>
+      </div>
+    </Link>
+  );
+}
 
 export default function UserProfile({ user, lang }) {
   const { id } = useParams();
@@ -9,6 +57,7 @@ export default function UserProfile({ user, lang }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [subLoading, setSubLoading] = useState(false);
+  const [openComments, setOpenComments] = useState(null);
 
   const load = () => {
     setLoading(true);
@@ -44,72 +93,45 @@ export default function UserProfile({ user, lang }) {
   const isMe = user && Number(user.id) === Number(profile.id);
 
   return (
-    <div style={{ maxWidth: "900px", margin: "30px auto", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>
-      <div style={{ background: "var(--bg-card)", borderRadius: "16px", padding: "30px", boxShadow: "var(--shadow)", display: "flex", gap: "30px", alignItems: "center", flexWrap: "wrap" }}>
-        <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", color: "white", fontWeight: "bold", flexShrink: 0 }}>
-          {profile.name.charAt(0).toUpperCase()}
+    <>
+      <div style={{ maxWidth: "900px", margin: "30px auto", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>
+        <div style={{ background: "var(--bg-card)", borderRadius: "16px", padding: "30px", boxShadow: "var(--shadow)", display: "flex", gap: "30px", alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", color: "white", fontWeight: "bold", flexShrink: 0 }}>
+            {profile.name.charAt(0).toUpperCase()}
+          </div>
+          <div style={{ flex: 1, minWidth: "250px" }}>
+            <h1 style={{ margin: "0", fontSize: "26px" }}>{profile.name}</h1>
+            <p style={{ margin: "8px 0", color: "var(--text-secondary)", fontSize: "14px" }}>{profile.email}</p>
+            {!isMe && user && (
+              <button onClick={toggleSubscribe} disabled={subLoading} style={{ marginTop: "10px", border: profile.is_subscribed ? "1px solid var(--border-color)" : "none", borderRadius: "20px", padding: "8px 24px", cursor: "pointer", fontFamily: "Franklin Gothic Medium", fontSize: "14px", background: profile.is_subscribed ? "transparent" : "var(--accent)", color: profile.is_subscribed ? "var(--text-main)" : "white", fontWeight: "bold" }}>
+                {profile.is_subscribed ? t(lang, "unsubscribe") : t(lang, "subscribe")}
+              </button>
+            )}
+          </div>
+          <div style={{ display: "flex", gap: "25px", flexWrap: "wrap" }}>
+            <Stat label={t(lang, "posts")} value={profile.posts.length} />
+            <Stat label={t(lang, "followers")} value={profile.followers} />
+            <Stat label={t(lang, "following")} value={profile.following} />
+            <Stat label={t(lang, "likesReceived")} value={"❤️ " + profile.likes_received} />
+          </div>
         </div>
 
-        <div style={{ flex: 1, minWidth: "250px" }}>
-          <h1 style={{ margin: "0", fontSize: "26px" }}>{profile.name}</h1>
-          <p style={{ margin: "8px 0", color: "var(--text-secondary)", fontSize: "14px" }}>{profile.email}</p>
-          {!isMe && user && (
-            <button
-              onClick={toggleSubscribe}
-              disabled={subLoading}
-              style={{
-                marginTop: "10px",
-                border: profile.is_subscribed ? "1px solid var(--border-color)" : "none",
-                borderRadius: "20px",
-                padding: "8px 24px",
-                cursor: "pointer",
-                fontFamily: "Franklin Gothic Medium",
-                fontSize: "14px",
-                background: profile.is_subscribed ? "transparent" : "var(--accent)",
-                color: profile.is_subscribed ? "var(--text-main)" : "white",
-                fontWeight: "bold"
-              }}
-            >
-              {profile.is_subscribed ? t(lang, "unsubscribe") : t(lang, "subscribe")}
-            </button>
-          )}
-        </div>
-
-        <div style={{ display: "flex", gap: "25px", flexWrap: "wrap" }}>
-          <Stat label={t(lang, "posts")} value={profile.posts.length} />
-          <Stat label={t(lang, "followers")} value={profile.followers} />
-          <Stat label={t(lang, "following")} value={profile.following} />
-          <Stat label={t(lang, "likesReceived")} value={"❤️ " + profile.likes_received} />
-        </div>
+        <h2 style={{ margin: "30px 0 20px" }}>{t(lang, "posts")}</h2>
+        {profile.posts.length ? (
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+            {profile.posts.map(post => (
+              <PostMiniCard key={post.id} post={post} lang={lang} user={user} onOpenComments={setOpenComments} />
+            ))}
+          </div>
+        ) : (
+          <p style={{ color: "var(--text-muted)" }}>{t(lang, "noUserPosts")}</p>
+        )}
       </div>
 
-      <h2 style={{ margin: "30px 0 20px" }}>{t(lang, "posts")}</h2>
-
-      {profile.posts.length ? (
-        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-          {profile.posts.map(post => (
-            <Link key={post.id} to={`/posts/${post.id}`} style={{ background: "var(--bg-card)", borderRadius: "14px", padding: "12px", boxShadow: "var(--shadow-small)", width: "220px", boxSizing: "border-box", textDecoration: "none", color: "var(--text-main)", display: "flex", flexDirection: "column" }}>
-              {post.image_url ? (
-                <img
-                  src={"http://my-api" + post.image_url}
-                  alt={post.title}
-                  style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: "10px", marginBottom: "10px" }}
-                  onError={e => { e.target.style.display = "none"; }}
-                />
-              ) : (
-                <div style={{ width: "100%", height: "120px", background: "var(--bg-hover)", borderRadius: "10px", marginBottom: "10px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: "12px" }}>
-                  нет картинки
-                </div>
-              )}
-              <h3 style={{ margin: "0 0 8px", fontSize: "18px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</h3>
-              <p style={{ margin: "0", fontSize: "13px", color: "var(--text-secondary)", overflow: "hidden", flex: 1 }}>{post.content?.substring(0, 60)}{post.content?.length > 60 ? "..." : ""}</p>
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <p style={{ color: "var(--text-muted)" }}>{t(lang, "noUserPosts")}</p>
+      {openComments && (
+        <CommentsModal post={openComments} user={user} lang={lang} onClose={() => setOpenComments(null)} />
       )}
-    </div>
+    </>
   );
 }
 
