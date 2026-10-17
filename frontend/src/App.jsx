@@ -14,6 +14,7 @@ import Post from "./pages/Post.jsx";
 import CreatePost from "./pages/CreatePost.jsx";
 import EditPost from "./pages/EditPost.jsx";
 import Profile from "./pages/Profile.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 import AdminUsers from "./pages/AdminUsers.jsx";
 import MenuManager from "./pages/MenuManager.jsx";
 import Languages from "./pages/Languages.jsx";
@@ -52,13 +53,12 @@ function App() {
 
       <main style={{ padding: "25px" }}>
         <Routes>
-          <Route path="/" element={<ProtectedRoute user={user}><Posts user={user} onlyMine={false} lang={lang} /></ProtectedRoute>} />
-          <Route path="/my-posts" element={<ProtectedRoute user={user}><Posts user={user} onlyMine={true} lang={lang} /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute user={user}><Posts user={user} lang={lang} /></ProtectedRoute>} />
           <Route path="/posts/:id" element={<ProtectedRoute user={user}><Post user={user} lang={lang} /></ProtectedRoute>} />
           <Route path="/create" element={<ProtectedRoute user={user}><CreatePost lang={lang} /></ProtectedRoute>} />
           <Route path="/edit/:id" element={<ProtectedRoute user={user}><EditPost lang={lang} /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute user={user}><Profile user={user} setUser={setUser} lang={lang} /></ProtectedRoute>} />
-
+          <Route path="/user/:id" element={<ProtectedRoute user={user}><UserProfile user={user} lang={lang} /></ProtectedRoute>} />
           <Route path="/menu" element={<ProtectedRoute user={user}><MenuManager user={user} lang={lang} /></ProtectedRoute>} />
 
           <Route path="/admin/users" element={<AdminRoute user={user}><AdminUsers user={user} lang={lang} /></AdminRoute>} />

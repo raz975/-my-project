@@ -1,0 +1,111 @@
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { api } from "../api.js";
+import { t } from "../translations.js";
+
+export default function UserProfile({ user, lang }) {
+  const { id } = useParams();
+  const [profile, setProfile] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [subLoading, setSubLoading] = useState(false);
+
+  const load = () => {
+    setLoading(true);
+    api.getUserProfile(id)
+      .then(data => setProfile(data.profile))
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(); }, [id]);
+
+  const toggleSubscribe = async () => {
+    if (!user || subLoading) return;
+    setSubLoading(true);
+    try {
+      if (profile.is_subscribed) {
+        await api.unsubscribe(profile.id);
+      } else {
+        await api.subscribe(profile.id);
+      }
+      load();
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setSubLoading(false);
+    }
+  };
+
+  if (loading) return <p style={{ fontFamily: "Franklin Gothic Medium", color: "var(--text-main)", textAlign: "center", marginTop: "40px" }}>{t(lang, "loading")}</p>;
+  if (error) return <p style={{ color: "var(--danger)", textAlign: "center", marginTop: "40px" }}>{error}</p>;
+  if (!profile) return null;
+
+  const isMe = user && Number(user.id) === Number(profile.id);
+
+  return (
+    <div style={{ maxWidth: "900px", margin: "30px auto", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)" }}>
+      {/* ШАПКА */}
+      <div style={{ background: "var(--bg-card)", borderRadius: "16px", padding: "30px", boxShadow: "var(--shadow)", display: "flex", gap: "30px", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", color: "white", fontWeight: "bold", flexShrink: 0 }}>
+          {profile.name.charAt(0).toUpperCase()}
+        </div>
+
+        <div style={{ flex: 1, minWidth: "250px" }}>
+          <h1 style={{ margin: "0", fontSize: "26px" }}>{profile.name}</h1>
+          <p style={{ margin: "8px 0", color: "var(--text-secondary)", fontSize: "14px" }}>{profile.email}</p>
+          {!isMe && user && (
+            <button
+              onClick={toggleSubscribe}
+              disabled={subLoading}
+              style={{
+                marginTop: "10px",
+                border: profile.is_subscribed ? "1px solid var(--border-color)" : "none",
+                borderRadius: "20px",
+                padding: "8px 24px",
+                cursor: "pointer",
+                fontFamily: "Franklin Gothic Medium",
+                fontSize: "14px",
+                background: profile.is_subscribed ? "transparent" : "var(--accent)",
+                color: profile.is_subscribed ? "var(--text-main)" : "white",
+                fontWeight: "bold"
+              }}
+            >
+              {profile.is_subscribed ? t(lang, "unsubscribe") : t(lang, "subscribe")}
+            </button>
+          )}
+        </div>
+
+        <div style={{ display: "flex", gap: "25px", flexWrap: "wrap" }}>
+          <Stat label={t(lang, "posts")} value={profile.posts.length} />
+          <Stat label={t(lang, "followers")} value={profile.followers} />
+          <Stat label={t(lang, "following")} value={profile.following} />
+          <Stat label={t(lang, "likesReceived")} value={"❤️ " + profile.likes_received} />
+        </div>
+      </div>
+
+      <h2 style={{ margin: "30px 0 20px" }}>{t(lang, "posts")}</h2>
+      {profile.posts.length ? (
+        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          {profile.posts.map(post => (
+            <Link key={post.id} to={`/posts/${post.id}`} style={{ background: "var(--bg-card)", borderRadius: "14px", padding: "20px", boxShadow: "var(--shadow-small)", width: "220px", minHeight: "140px", boxSizing: "border-box", textDecoration: "none", color: "var(--text-main)", display: "flex", flexDirection: "column" }}>
+              <h3 style={{ margin: "0 0 8px", fontSize: "18px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{post.title}</h3>
+              <p style={{ margin: "0", fontSize: "13px", color: "var(--text-secondary)", overflow: "hidden", flex: 1 }}>{post.content?.substring(0, 60)}{post.content?.length > 60 ? "..." : ""}</p>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <p style={{ color: "var(--text-muted)" }}>{t(lang, "noUserPosts")}</p>
+      )}
+    </div>
+  );
+}
+
+function Stat({ label, value }) {
+  return (
+    <div style={{ textAlign: "center" }}>
+      <div style={{ fontSize: "22px", fontWeight: "bold" }}>{value}</div>
+      <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>{label}</div>
+    </div>
+  );
+}

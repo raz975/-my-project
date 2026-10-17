@@ -55,7 +55,9 @@ export default function Post({ user, lang }) {
     <>
       <div style={{ background: "var(--bg-card)", boxShadow: "var(--shadow)", borderRadius: "14px", padding: "20px", fontFamily: "Franklin Gothic Medium", width: "430px", minHeight: "240px", margin: "30px auto", boxSizing: "border-box", color: "var(--text-main)", transition: "background 0.3s" }}>
         <h1 style={{ margin: "0 0 18px", fontSize: "30px" }}>{post.title}</h1>
-        <p style={{ margin: "9px 0" }}><b>{t(lang, "author")}:</b> {post.author}</p>
+        <p style={{ margin: "9px 0" }}>
+          <b>{t(lang, "author")}:</b> <Link to={`/user/${post.user_id}`} style={{ color: "var(--accent)", textDecoration: "none" }}>{post.author}</Link>
+        </p>
         <p style={{ margin: "9px 0" }}><b>{t(lang, "created")}:</b> {post.created_at ? new Date(post.created_at).toLocaleDateString() : "Unknown"}</p>
 
         {image && (
@@ -67,18 +69,10 @@ export default function Post({ user, lang }) {
         <p style={{ margin: "14px 0 16px" }}>{post.content}</p>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-          <button
-            onClick={toggleLike}
-            disabled={loadingLike || !user}
-            style={{ border: "2px solid " + (likedByMe ? "#e91e63" : "var(--border-color)"), background: likedByMe ? "#fce4ec" : "transparent", cursor: user ? "pointer" : "not-allowed", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: likedByMe ? "#e91e63" : "var(--text-main)", fontWeight: "bold" }}
-          >
+          <button onClick={toggleLike} disabled={loadingLike || !user} style={{ border: "2px solid " + (likedByMe ? "#e91e63" : "var(--border-color)"), background: likedByMe ? "#fce4ec" : "transparent", cursor: user ? "pointer" : "not-allowed", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: likedByMe ? "#e91e63" : "var(--text-main)", fontWeight: "bold" }}>
             {likedByMe ? "❤️" : "🤍"} {likes} {likes === 1 ? t(lang, "like") : t(lang, "likes")}
           </button>
-
-          <button
-            onClick={() => setOpenComments(true)}
-            style={{ border: "2px solid var(--border-color)", background: "transparent", cursor: "pointer", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)", fontWeight: "bold" }}
-          >
+          <button onClick={() => setOpenComments(true)} style={{ border: "2px solid var(--border-color)", background: "transparent", cursor: "pointer", fontSize: "16px", padding: "6px 14px", borderRadius: "20px", fontFamily: "Franklin Gothic Medium", color: "var(--text-main)", fontWeight: "bold" }}>
             💬 {t(lang, "comments")}
           </button>
         </div>
